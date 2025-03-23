@@ -1,0 +1,352 @@
+
+<div class="container mt-5">
+    <h2 class="mb-4">Video Tutorials</h2>
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Upload New Tutorial</h5>
+                    <form id="upload-form" class="mb-3">
+                        <div class="mb-3">
+                            <label for="video-title" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="video-title" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="video-file" class="form-label">Video File</label>
+                            <input type="file" class="form-control" id="video-file" accept="video/*" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Upload</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Available Tutorials</h5>
+                    <div id="video-list" class="list-group">
+                        <!-- Sample tutorials -->
+                        <div class="list-group-item">
+                            <h5 class="mb-1">Introduction to Sign Language</h5>
+                            <video class="w-100 mt-2" controls>
+                                <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                        <div class="list-group-item">
+                            <h5 class="mb-1">Basic Gestures Tutorial</h5>
+                            <video class="w-100 mt-2" controls>
+                                <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Base styles and CSS reset */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        background: linear-gradient(135deg, #f6f8fb 0%, #e9edf2 100%);
+        color: #333;
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 2rem 1rem;
+    }
+    
+    .container {
+        width: 100%;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+    
+    /* Main title styling */
+    h2 {
+        text-align: center;
+        color: #1a365d;
+        font-weight: 700;
+        font-size: 2.5rem;
+        margin-bottom: 2rem;
+        position: relative;
+        padding-bottom: 1rem;
+    }
+    
+    h2::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 4px;
+        background: linear-gradient(90deg, #3498db, #2980b9);
+        border-radius: 2px;
+    }
+    
+    /* Card styling */
+    .card {
+        background: rgba(255, 255, 255, 0.95);
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        backdrop-filter: blur(10px);
+        margin-bottom: 2rem;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+    }
+    
+    .card-body {
+        padding: 2rem;
+    }
+    
+    .card-title {
+        color: #2c5282;
+        font-size: 1.5rem;
+        font-weight: 600;
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+    
+    /* Form styling */
+    .form-label {
+        font-weight: 500;
+        color: #4a5568;
+        font-size: 1rem;
+    }
+    
+    .form-control {
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 1rem;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+        background: #ffffff;
+    }
+    
+    .form-control:focus {
+        border-color: #3498db;
+        box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.15);
+        outline: none;
+    }
+    
+    /* File input styling */
+    input[type="file"] {
+        background: #f8fafc;
+        padding: 0.75rem;
+        cursor: pointer;
+    }
+    
+    input[type="file"]::-webkit-file-upload-button {
+        background: #3498db;
+        color: white;
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 8px;
+        margin-right: 1rem;
+        cursor: pointer;
+        transition: background 0.2s ease;
+    }
+    
+    input[type="file"]::-webkit-file-upload-button:hover {
+        background: #2980b9;
+    }
+    
+    /* Button styling */
+    .btn-primary {
+        background: linear-gradient(45deg, #3498db, #2980b9);
+        border: none;
+        border-radius: 12px;
+        padding: 1rem 2rem;
+        font-weight: 600;
+        font-size: 1rem;
+        color: white;
+        width: 100%;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    .btn-primary:hover {
+        background: linear-gradient(45deg, #2980b9, #2573a7);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(52, 152, 219, 0.25);
+    }
+    
+    /* Video list styling */
+    .list-group-item {
+        border: none;
+        border-radius: 12px;
+        margin-bottom: 1.5rem;
+        padding: 1.5rem;
+        background: #ffffff;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+    }
+    
+    .list-group-item:last-child {
+        margin-bottom: 0;
+    }
+    
+    .list-group-item h5 {
+        color: #2c5282;
+        font-weight: 600;
+        font-size: 1.25rem;
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+    
+    /* Video player styling */
+    video {
+        border-radius: 12px;
+        width: 100%;
+        background: #000;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        margin-top: 1rem;
+    }
+    
+    /* Upload animation */
+    @keyframes uploadProgress {
+        0% { width: 0; }
+        100% { width: 100%; }
+    }
+    
+    .upload-progress {
+        height: 4px;
+        background: linear-gradient(90deg, #3498db, #2ecc71);
+        border-radius: 2px;
+        width: 0;
+        animation: uploadProgress 2s ease-in-out;
+    }
+    
+    /* Success message */
+    .upload-success {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #2ecc71;
+        color: white;
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        font-weight: 500;
+        box-shadow: 0 4px 15px rgba(46, 204, 113, 0.2);
+        z-index: 1000;
+    }
+    
+    /* Responsive design */
+    @media (max-width: 768px) {
+        body {
+            padding: 1rem;
+        }
+    
+        .card-body {
+            padding: 1.5rem;
+        }
+    
+        h2 {
+            font-size: 2rem;
+        }
+    
+        .btn-primary {
+            padding: 0.75rem 1.5rem;
+        }
+    }
+    
+    /* Loading spinner */
+    .spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #3498db;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 20px auto;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    /* Empty state */
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        color: #718096;
+    }
+    
+    .empty-state i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        color: #a0aec0;
+    }
+    
+    /* Form group spacing */
+    .mb-3 {
+        margin-bottom: 1.5rem;
+    }
+    
+    /* Add some depth to the page */
+    .container {
+        perspective: 1000px;
+    }
+    
+    .card {
+        transform-style: preserve-3d;
+        backface-visibility: hidden;
+    }
+    </style>
+<script>
+document.getElementById('upload-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const title = document.getElementById('video-title').value;
+    const file = document.getElementById('video-file').files[0];
+    
+    if (file) {
+        // Create new video element
+        const videoItem = document.createElement('div');
+        videoItem.className = 'list-group-item';
+        
+        const titleElement = document.createElement('h5');
+        titleElement.className = 'mb-1';
+        titleElement.textContent = title;
+        
+        const video = document.createElement('video');
+        video.className = 'w-100 mt-2';
+        video.controls = true;
+        
+        const source = document.createElement('source');
+        source.src = URL.createObjectURL(file);
+        source.type = file.type;
+        
+        video.appendChild(source);
+        videoItem.appendChild(titleElement);
+        videoItem.appendChild(video);
+        
+        // Add to the beginning of the list
+        const videoList = document.getElementById('video-list');
+        videoList.insertBefore(videoItem, videoList.firstChild);
+        
+        // Reset form
+        e.target.reset();
+    }
+});
+</script>
+{% endblock %}

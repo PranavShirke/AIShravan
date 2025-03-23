@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Advanced Hand Gesture Recognition</title>
+    <style>
+        body {
+    /* Modern gradient background with softer colors */
+    background: linear-gradient(-45deg, #3a6186, #89253e, #5b5ea6, #434343);
+    background-size: 400% 400%;
+    animation: gradientMove 15s ease infinite;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #333;
+}
+
+@keyframes gradientMove {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 800px;
+    width: 90%;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+h1 {
+    color: #3a3a3a;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+#video-container {
+    position: relative;
+    width: 640px;
+    max-width: 100%;
+    height: 480px;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    margin: 0 auto;
+    border: 5px solid #fff;
+}
+
+#output-canvas {
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform: scaleX(-1);
+    border-radius: 10px;
+    width: 100%;
+    height: 100%;
+}
+
+#input-video {
+    transform: scaleX(-1);
+    border-radius: 10px;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+#gesture-output {
+    margin-top: 30px;
+    font-size: 28px;
+    font-weight: bold;
+    padding: 15px 30px;
+    background: linear-gradient(145deg, #ffffff, #f0f0f0);
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    min-width: 200px;
+    border-left: 5px solid #3a6186;
+}
+
+#loading {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 24px;
+    display: none;
+    background-color: rgba(0, 0, 0, 0.85);
+    color: white;
+    padding: 25px 40px;
+    border-radius: 12px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+#confidence {
+    margin-top: 15p
+}
+    </style>
+</head>
+<body>
+    <div id="loading">Loading MediaPipe model...</div>
+    <div id="video-container">
+        <video id="input-video" width="640" height="480" autoplay playsinline></video>
+        <canvas id="output-canvas" width="640" height="480"></canvas>
+    </div>
+    <div id="gesture-output">
+        Detected Gesture: <span id="gesture">Initializing...</span>
+        <div id="confidence">Confidence: <span id="confidence-value">0%</span></div>
+        <div id="gesture-history">Recent Gestures: <span id="history-value"></span></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+
+    <script>
+        class HandGestureRecognizer {
+            constructor() {
+                this.videoElement = document.getElementById('input-video');
+                this.canvasElement = document.getElementById('output-canvas');
+                this.canvasCtx = this.canvasElement.getContext('2d');
+                this.gestureOutput = document.getElementById('gesture');
+                this.confidenceOutput = document.getElementById('confidence-value');
+                this.historyOutput = document.getElementById('history-value');
+                this.loadingElement = document.getElementById('loading');
+                
+                this.gestureHistory = [];
+                this.lastGesture = null;
+                this.gestureConfidence = 0;
+                this.gestureStartTime = null;
+                
+                this.initializeMediaPipe();
+            }
+
+            async initializeMediaPipe() {
+                this.loadingElement.style.display = 'block';
+                
+                this.hands = new Hands({
+                    locateFile: (file) => {
+                        return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
+                    }
+                });
+
+                this.hands.setOptions({
+                    maxNumHands: 2,
+                    modelComplexity: 1,
+                    minDetectionConfidence: 0.7,
+                    minTrackingConfidence: 0.7
+                });
+
+                this.hands.onResults(this.onResults.bind(this));
+
+                this.camera = new Camera(this.videoElement, {
+                    onFrame: async () => {
+                        await this.hands.send({image: this.videoElement});
+                    },
+                    width: 640,
+                    height: 480
+                });
+
+                try {
+                    await this.camera.start();
+                    this.loadingElement.style.display = 'none';
+                } catch (error) {
+                    console.error('Error starting camera:', error);
+                    this.gestureOutput.textContent = 'Error: Could not start camera';
+                }
+            }
+
+            calculateHandAngle(landmarks, point1, point2) {
+                const angle = Math.atan2(
+                    landmarks[point2].y - landmarks[point1].y,
+                    landmarks[point2].x - landmarks[point1].x
+                ) * 180 / Math.PI;
+                return angle;
+            }
+
+            getFingerSlope(landmarks, tipIdx, baseIdx) {
+                return (landmarks[tipIdx].y - landmarks[baseIdx].y) / 
+                       (landmarks[tipIdx].x - landmarks[baseIdx].x);
+            }
+
+            onResults(results) {
+                this.canvasCtx.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height);
+                this.canvasCtx.drawImage(results.image, 0, 0, this.canvasElement.width, this.canvasElement.height);
+
+                if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+                    for (const landmarks of results.multiHandLandmarks) {
+                        // Enhanced visualization
+                        drawConnectors(this.canvasCtx, landmarks, HAND_CONNECTIONS,
+                            {color: '#00FF00', lineWidth: 3});
+                        drawLandmarks(this.canvasCtx, landmarks,
+                            {color: '#FF0000', lineWidth: 2, radius: 3});
+                            
+                        const gesture = this.recognizeGesture(landmarks);
+                        this.updateGestureStatus(gesture);
+                    }
+                } else {
+                    this.gestureOutput.textContent = 'No hand detected';
+                    this.confidenceOutput.textContent = '0%';
+                }
+            }
+
+            updateGestureStatus(gesture) {
+                if (gesture === this.lastGesture) {
+                    if (!this.gestureStartTime) {
+                        this.gestureStartTime = Date.now();
+                    }
+                    const gestureDuration = Date.now() - this.gestureStartTime;
+                    this.gestureConfidence = Math.min(100, (gestureDuration / 1000) * 100);
+                } else {
+                    this.gestureStartTime = Date.now();
+                    this.gestureConfidence = 0;
+                }
+
+                this.lastGesture = gesture;
+                this.gestureOutput.textContent = gesture;
+                this.confidenceOutput.textContent = `${Math.round(this.gestureConfidence)}%`;
+
+                if (this.gestureConfidence > 80) {
+                    this.updateGestureHistory(gesture);
+                }
+            }
+
+            updateGestureHistory(gesture) {
+                if (this.gestureHistory.length === 0 || 
+                    this.gestureHistory[this.gestureHistory.length - 1] !== gesture) {
+                    this.gestureHistory.push(gesture);
+                    if (this.gestureHistory.length > 5) {
+                        this.gestureHistory.shift();
+                    }
+                    this.historyOutput.textContent = this.gestureHistory.join(' → ');
+                }
+            }
+
+            recognizeGesture(landmarks) {
+                const getDistance = (point1, point2) => {
+                    const dx = point1.x - point2.x;
+                    const dy = point1.y - point2.y;
+                    return Math.sqrt(dx * dx + dy * dy);
+                };
+
+                const isFingerExtended = (tipIdx, pipIdx, mcpIdx) => {
+                    const tipToMcp = getDistance(landmarks[tipIdx], landmarks[mcpIdx]);
+                    const pipToMcp = getDistance(landmarks[pipIdx], landmarks[mcpIdx]);
+                    return tipToMcp > pipToMcp * 1.2;
+                };
+
+                const thumbAngle = this.calculateHandAngle(landmarks, 4, 2);
+                const isThumbExtended = Math.abs(thumbAngle) > 30;
+                const isIndexExtended = isFingerExtended(8, 7, 5);
+                const isMiddleExtended = isFingerExtended(12, 11, 9);
+                const isRingExtended = isFingerExtended(16, 15, 13);
+                const isPinkyExtended = isFingerExtended(20, 19, 17);
+
+                // Enhanced gesture recognition with more gestures
+                if (!isThumbExtended && !isIndexExtended && !isMiddleExtended && 
+                    !isRingExtended && !isPinkyExtended) {
+                    return 'Fist';
+                }
+                if (isThumbExtended && isIndexExtended && isMiddleExtended && 
+                    isRingExtended && isPinkyExtended) {
+                    return 'Open Hand';
+                }
+                if (!isThumbExtended && isIndexExtended && !isMiddleExtended && 
+                    !isRingExtended && !isPinkyExtended) {
+                    return 'Pointing';
+                }
+                if (!isThumbExtended && isIndexExtended && isMiddleExtended && 
+                    !isRingExtended && !isPinkyExtended) {
+                    return 'Victory';
+                }
+                if (isThumbExtended && !isIndexExtended && !isMiddleExtended && 
+                    !isRingExtended && !isPinkyExtended) {
+                    return 'Thumbs Up';
+                }
+                if (!isThumbExtended && isIndexExtended && isMiddleExtended && 
+                    isRingExtended && !isPinkyExtended) {
+                    return 'Three Fingers';
+                }
+                if (isThumbExtended && isIndexExtended && !isMiddleExtended && 
+                    !isRingExtended && isPinkyExtended) {
+                    return 'Rock On';
+                }
+                if (!isThumbExtended && !isIndexExtended && !isMiddleExtended && 
+                    !isRingExtended && isPinkyExtended) {
+                    return 'Pinky';
+                }
+                if (isThumbExtended && isPinkyExtended && !isIndexExtended && 
+                    !isMiddleExtended && !isRingExtended) {
+                    return 'Hang Loose';
+                }
+                if (!isThumbExtended && isIndexExtended && !isMiddleExtended && 
+                    !isRingExtended && isPinkyExtended) {
+                    return 'Spider-Man';
+                }
+
+                return 'Unknown Gesture';
+            }
+        }
+
+        window.onload = () => {
+            new HandGestureRecognizer();
+        };
+    </script>
+</body>
+</html>

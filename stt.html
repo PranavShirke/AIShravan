@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Speech Recognition</title>
+    <style>
+        /* Smooth gradient animation */
+        body {
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 50px 20px;
+            background: linear-gradient(135deg, #007bff, #00c6ff, #01979c, #5515df, #4fdbf7);
+            background-size: 400% 400%;
+            animation: gradientBG 10s ease infinite;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            font-size: 18px;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            color: white;
+            font-weight: bold;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            outline: none;
+        }
+
+        #start-btn {
+            background: #28a745;
+        }
+        #start-btn:hover {
+            background: #218838;
+            transform: scale(1.05);
+        }
+
+        #stop-btn {
+            background: #dc3545;
+        }
+        #stop-btn:hover {
+            background: #c82333;
+            transform: scale(1.05);
+        }
+
+        #transcription {
+            margin-top: 30px;
+            font-size: 22px;
+            font-weight: bold;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            max-width: 800px;
+            width: 90%;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            transition: all 0.3s ease-in-out;
+            backdrop-filter: blur(10px);
+        }
+
+        #transcription::after {
+            content: attr(data-placeholder);
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Real-Time Speech Recognition</h1>
+
+    <div class="btn-container">
+        <button id="start-btn">🎤 Start Listening</button>
+        <button id="stop-btn">🛑 Stop</button>
+    </div>
+
+    <div id="transcription" data-placeholder="Transcription will appear here..."></div>
+
+    <script>
+        let recognition;
+        let isRecording = false;
+        let transcript = [];
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const startButton = document.getElementById("start-btn");
+            const stopButton = document.getElementById("stop-btn");
+            const outputDiv = document.getElementById("transcription");
+
+            if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
+                alert("Speech recognition is not supported in this browser.");
+                return;
+            }
+
+            recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.lang = "en-US"; // Change this for different languages
+
+            recognition.onresult = (event) => {
+                let finalText = "";
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    let transcriptText = event.results[i][0].transcript.trim();
+                    if (event.results[i].isFinal) {
+                        transcript.push(transcriptText);
+                    } else {
+                        finalText = transcriptText;
+                    }
+                }
+                outputDiv.innerHTML = transcript.join(". ") + (finalText ? " " + finalText : "");
+                outputDiv.removeAttribute("data-placeholder");
+            };
+
+            recognition.onerror = (event) => {
+                console.error("Speech recognition error:", event.error);
+            };
+
+            startButton.addEventListener("click", () => {
+                if (!isRecording) {
+                    recognition.start();
+                    isRecording = true;
+                    outputDiv.innerHTML = "🎤 Listening...";
+                    outputDiv.style.opacity = "1";
+                }
+            });
+
+            stopButton.addEventListener("click", () => {
+                if (isRecording) {
+                    recognition.stop();
+                    isRecording = false;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

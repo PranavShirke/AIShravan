@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Language Video Finder</title>
+    <style>
+       /* General Styling */
+/* Animated Gradient Background */
+/* Smooth Animated Gradient Background */
+/* Animated Multi-Color Gradient Background */
+body {
+    font-family: 'Poppins', sans-serif;
+    text-align: center;
+    /* Updated background with more modern, sleek colors */
+    background: linear-gradient(135deg, #1a2a6c, #198cde, #14d8ea);
+    background-size: 400% 400%;
+    color: white;
+    padding: 20px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    animation: gradientBG 15s ease infinite;
+}
+
+/* Slightly slower, smoother animation for a more sleek feel */
+@keyframes gradientBG {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Input Box - Sleeker with glass morphism effect */
+input {
+    font-size: 18px;
+    padding: 16px;
+    width: 60%;
+    max-width: 400px;
+    border: none;
+    border-radius: 12px;
+    outline: none;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    color: white;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+input:focus {
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+/* Buttons - More modern and sleek */
+button {
+    font-size: 18px;
+    padding: 16px 28px;
+    margin: 10px;
+    cursor: pointer;
+    border: none;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    color: white;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+button:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+/* Message Styling */
+#message {
+    font-size: 18px;
+    margin-top: 16px;
+    font-weight: 500;
+    padding: 10px;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
+    display: inline-block;
+}
+
+/* Video Container */
+#video-container {
+    margin-top: 30px;
+    display: none;
+    width: 90%;
+    max-width: 1200px;
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Video Frame - Bigger & Responsive with improved aspect ratio */
+iframe {
+    width: 100%;
+    max-width: 1100px;
+    aspect-ratio: 16/9;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    border: none;
+}
+
+    </style>
+</head>
+<body>
+
+    <h1>Sign Language Video Finder</h1>
+    <input type="text" id="search-input" placeholder="Enter word..." />
+    <button onclick="searchVideo()">Search</button>
+    
+    <div id="message"></div>
+    
+    <div id="video-container">
+        <h3>Sign Language Video</h3>
+        <iframe id="video-frame" width="560" height="315" frameborder="0" allowfullscreen></iframe>
+    </div>
+
+    <script>
+        const API_KEY = "AIzaSyATqApkATZVq3_87RVymMXSXkl2_0cdTsA";  // Replace with your YouTube API Key
+
+        async function searchVideo() {
+            let word = document.getElementById("search-input").value.trim();
+            if (!word) {
+                document.getElementById("message").innerHTML = "<p style='color: red;'>Please enter a word!</p>";
+                return;
+            }
+
+            document.getElementById("message").innerHTML = "<p>Searching...</p>";
+
+            let searchQuery = `${word} ASL sign`;  // Searching for ASL sign videos
+            let url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(searchQuery)}&key=${API_KEY}&maxResults=1&type=video`;
+
+            try {
+                let response = await fetch(url);
+                let data = await response.json();
+
+                if (data.items.length > 0) {
+                    let videoId = data.items[0].id.videoId;
+                    let videoUrl = `https://www.youtube.com/embed/${videoId}`;
+                    
+                    document.getElementById("video-frame").src = videoUrl;
+                    document.getElementById("video-container").style.display = "block";
+                    document.getElementById("message").innerHTML = "<p style='color: green;'>Playing video...</p>";
+                } else {
+                    document.getElementById("message").innerHTML = "<p style='color: red;'>No video found.</p>";
+                }
+            } catch (error) {
+                document.getElementById("message").innerHTML = "<p style='color: red;'>Error fetching video.</p>";
+                console.error(error);
+            }
+        }
+    </script>
+
+</body>
+</html>
