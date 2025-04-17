@@ -9,7 +9,9 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
-
+    <!-- Add Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 </head>
 <body>
     <!-- Header -->
@@ -33,16 +35,22 @@
                         <li class="nav-item">
                             <a onclick="scrollToSection('features')" class="nav-link">Features</a>
                         </li>
-                    
                         <li class="nav-item">
                             <a href="#" class="nav-link">FAQs</a>
                         </li>
                         <li class="nav-item">
                             <a href="./About.html" class="nav-link">About</a>
                         </li>
-                        <li class="nav-item">
-                            <button style="background-color: rgb(65, 103, 216); border-radius: 5px;;"> <a href="login.html" class="nav-link">Login</a></button>
-                         </li>
+                        <li class="nav-item" id="loginButtonContainer">
+                            <a href="login.html" class="nav-link" style="background-color: rgb(65, 103, 216); border-radius: 5px; padding: 0.5rem 1rem; color: white;">
+                                Login
+                            </a>
+                        </li>
+                        <li class="nav-item d-none" id="logoutButtonContainer">
+                            <a href="#" class="nav-link" onclick="handleLogout()" style="background-color: rgb(216, 65, 65); border-radius: 5px; padding: 0.5rem 1rem; color: white;">
+                                Logout
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </nav>
@@ -267,6 +275,52 @@
             document.getElementById(features).scrollIntoView({ behavior: 'smooth' });
         }
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAQ_y_einsNojJNTvSth1burw5Ud71hnwY",
+            authDomain: "ai-shravan.firebaseapp.com",
+            projectId: "ai-shravan",
+            storageBucket: "ai-shravan.firebasestorage.app",
+            messagingSenderId: "947415877720",
+            appId: "1:947415877720:web:374a581af9d8e4ce26a22d",
+            measurementId: "G-V1KVN7MM5N"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        // Handle authentication state changes
+        auth.onAuthStateChanged((user) => {
+            const loginButtonContainer = document.getElementById('loginButtonContainer');
+            const logoutButtonContainer = document.getElementById('logoutButtonContainer');
+            
+            if (user) {
+                // User is signed in
+                loginButtonContainer.classList.add('d-none');
+                logoutButtonContainer.classList.remove('d-none');
+            } else {
+                // User is signed out
+                loginButtonContainer.classList.remove('d-none');
+                logoutButtonContainer.classList.add('d-none');
+            }
+        });
+
+        // Handle logout
+        function handleLogout() {
+            auth.signOut()
+                .then(() => {
+                    // Sign-out successful
+                    window.location.href = 'login.html';
+                })
+                .catch((error) => {
+                    console.error('Logout error:', error);
+                });
+        }
+    </script>
 </body>
 </html>
