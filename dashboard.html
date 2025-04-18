@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Shravan </title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="styless.css">
+  <style>
+    
+
+  </style>
+</head>
+<body>
+  <div class="d-flex">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="logo-container">
+        <div class="logo-icon">
+          <i class="fas fa-layer-group me-2"></i>
+        </div>
+        <div class="logo-text">AI Shravan</div>
+      </div>
+      
+      <ul class="sidebar-menu ps-0">
+        <li class="menu-item active">
+          <a href="#dashboard" class="menu-link" data-section="dashboard">
+            <span class="menu-icon"><i class="fas fa-home"></i></span>
+            <span class="menu-text">Dashboard</span>
+          </a>
+        </li>
+    
+        <li class="menu-item">
+          <a href="#chatbot-support" class="menu-link" data-section="chatbot-support" onclick="window.location.href='chatbot.html'">
+            <span class="menu-icon"><i class="fas fa-robot"></i></span>
+            <span class="menu-text">Chatbot Support</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="#learning-resources" class="menu-link" data-section="learning-resources" onclick="window.location.href='up.html'">
+            <span class="menu-icon"><i class="fas fa-graduation-cap"></i></span>
+            <span class="menu-text">Learning Resources</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="#community" class="menu-link" data-section="community">
+            <span class="menu-icon"><i class="fas fa-users"></i></span>
+            <span class="menu-text">Community</span>
+          </a>
+        </li>
+        <li class="menu-item">
+            <a href="./forms.html" class="menu-link" data-section="" onclick="window.location.href='forms.html'">
+              <span class="menu-icon"><i class="bi bi-card-text" style="color:black;"></i></span>
+              <span class="menu-text">Share your experience</span>
+            </a>
+          </li>
+        <li class="menu-item">
+          <a href="#settings" class="menu-link" data-section="settings">
+            <span class="menu-icon"><i class="fas fa-cog"></i></span>
+            <span class="menu-text">Settings</span>
+          </a>
+        </li>
+        
+        
+      </ul>
+     
+      <div class="sidebar-footer">
+        <button class="collapse-btn">
+          <span class="collapse-text">Collapse Menu</span>
+          <i class="fas fa-chevron-left collapse-icon"></i>
+        </button>
+      </div>
+    </aside>
+    
+    <!-- Main Content -->
+    <div class="main-content w-100">
+      <header class="sticky-top bg-white shadow-sm">
+        <div class="d-flex justify-content-between align-items-center px-3 py-2">
+          <div class="d-flex align-items-center">
+            <button class="btn btn-link d-md-none me-2" id="menuToggle">
+              <i class="fas fa-bars"></i>
+            </button>
+            <h1 class="h5 mb-0" id="pageTitle">Dashboard</h1>
+          </div>
+          <div class="d-flex align-items-center">
+            <div class="position-relative me-3">
+              <i class="fas fa-bell"></i>
+              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary">
+                3
+              </span>
+            </div>
+
+            <!--user login inf0-->
+            <div class="d-flex align-items-center">
+              <div class="avatar me-2">JS</div>
+              <div class="d-none d-sm-block">
+                <div class="fw-bold small">John Smith</div>
+                <div class="text-muted small">Premium User</div>
+              </div>
+            </div>
+          </div>
+        </div>
+       
+      </header>
+      
+      <div class="container-fluid py-4">
+        <!-- Dashboard Section -->
+        <section id="dashboard-section" class="feature-section active">
+  
+
+<!-- Charts Row -->
+<div class="row mb-4">
+
+    <!-- Left Chart (Your Line Chart - Deaf People vs Interpreters) -->
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow-sm h-100">
+          <div class="card-header bg-white">
+            <div class="d-flex justify-content-between align-items-center">
+              <h5 class="card-title mb-0">Deaf People vs Sign Language Interpreters</h5>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="chart-container" style="position: relative; height:300px; width:700px; max-width:600px;">
+              <canvas id="deafInterpreterChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Chart.js CDN (add only once in your project) -->
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      
+      <script>
+        const ctxLine = document.getElementById('deafInterpreterChart').getContext('2d');
+      
+        const gradientDeaf = ctxLine.createLinearGradient(0, 0, 0, 220);
+        gradientDeaf.addColorStop(0, 'rgba(255,99,132,0.4)');
+        gradientDeaf.addColorStop(1, 'rgba(255,99,132,0)');
+      
+        const gradientInterpreter = ctxLine.createLinearGradient(0, 0, 0, 220);
+        gradientInterpreter.addColorStop(0, 'rgba(75,192,192,0.4)');
+        gradientInterpreter.addColorStop(1, 'rgba(75,192,192,0)');
+      
+        new Chart(ctxLine, {
+          type: 'line',
+          data: {
+            labels: ['2018', '2019', '2020', '2021', '2022', '2023'],  // Years
+            datasets: [{
+              label: 'Number of Deaf People (in millions)',
+              data: [5.19, 5.45, 5.72, 6.00, 6.30, 6.61],
+              fill: true,
+              backgroundColor: gradientDeaf,
+              borderColor: 'rgba(255,99,132,1)',
+              tension: 0.4,
+              pointBackgroundColor: '#fff',
+              pointBorderColor: 'rgba(255,99,132,1)',
+              pointRadius: 4
+            }, {
+              label: 'Number of Interpreters',
+              data: [2595, 2725, 2860, 3000, 3150, 3300],
+              fill: true,
+              backgroundColor: gradientInterpreter,
+              borderColor: 'rgba(75,192,192,1)',
+              tension: 0.4,
+              pointBackgroundColor: '#fff',
+              pointBorderColor: 'rgba(75,192,192,1)',
+              pointRadius: 4
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: {
+                  color: '#444'
+                },
+                title: {
+                  display: true,
+                  text: 'Number of People/Interpreters',
+                  color: '#333',
+                  font: {
+                    size: 12,
+                    weight: 'bold'
+                  }
+                }
+              },
+              x: {
+                ticks: {
+                  color: '#444'
+                },
+                title: {
+                  display: true,
+                  text: 'Year',
+                  color: '#333',
+                  font: {
+                    size: 12,
+                    weight: 'bold'
+                  }
+                }
+              }
+            },
+            plugins: {
+              legend: {
+                display: true,
+                labels: {
+                  color: '#333',
+                  boxWidth: 20
+                }
+              },
+              tooltip: {
+                backgroundColor: 'rgba(0,0,0,0.7)',
+                callbacks: {
+                  label: function(context) {
+                    return `${context.dataset.label}: ${context.parsed.y}`;
+                  }
+                }
+              }
+            }
+          }
+        });
+      </script>
+      
+  
+ <!-- Right Chart (Beautiful Pie Chart) -->
+<div class="col-lg-6 mb-4">
+    <div class="card shadow-sm h-100">
+      <div class="card-header bg-white">
+        <h5 class="card-title mb-0">Deaf Individuals in Labour Force</h5>
+      </div>
+      <div class="card-body">
+        <div class="chart-container" style="position: relative; height:300px; width:100%; max-width:600px;">
+          <canvas id="labourForcePieChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Chart.js CDN (only once per project) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <script>
+    const ctxPie = document.getElementById('labourForcePieChart').getContext('2d');
+  
+    new Chart(ctxPie, {
+      type: 'doughnut', // Change to 'pie' if you prefer full pie
+      data: {
+        labels: ['Employed', 'Unemployed', 'Not in Labour Force'],
+        datasets: [{
+          data: [45, 25, 30],
+          backgroundColor: [
+            'linear-gradient(to right, #36d1dc, #5b86e5)',
+            'linear-gradient(to right, #ff758c, #ff7eb3)',
+            'linear-gradient(to right, #fddb92, #d1fdff)'
+          ],
+          backgroundColor: [
+            'rgba(54, 162, 235, 0.8)',
+            'rgba(255, 99, 132, 0.8)',
+            'rgba(255, 206, 86, 0.8)'
+          ],
+          borderColor: '#fff',
+          borderWidth: 2,
+          hoverOffset: 12,
+          borderRadius: 8
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '50%', // Makes it a doughnut; remove or change to '0%' for full pie
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              color: '#333',
+              font: {
+                size: 14,
+                weight: 'bold'
+              },
+              padding: 15,
+              boxWidth: 14
+            }
+          },
+          tooltip: {
+            backgroundColor: 'rgba(0,0,0,0.8)',
+            titleFont: { size: 14 },
+            bodyFont: { size: 13 },
+            callbacks: {
+              label: function(context) {
+                return `${context.label}: ${context.parsed}%`;
+              }
+            }
+          }
+        }
+      }
+    });
+  </script>
+  
+  
+          <!-- Feature Cards Row -->
+          <div class="row mb-4">
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card feature-card shadow-sm h-100">
+                <div class="card-body">
+                  <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="card-icon">
+                      <i class="fas fa-camera"></i>
+                    </div>
+                  </div>
+                  <h5 class="card-title">Gesture Recognition</h5>
+                  <p class="card-text text-muted">Convert gestures to text in real-time</p>
+                  <small class="text-muted">Ready to use</small>
+                  <div class="mt-3">
+                    <button class="btn btn-primary w-100" data-section="asl-recognition" onclick="window.location.href='Gesreco.html'">Launch Tool</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card feature-card shadow-sm h-100">
+                <div class="card-body">
+                  <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="card-icon">
+                      <i class="fas fa-volume-up"></i>
+                    </div>
+                  </div>
+                  <h5 class="card-title">Text to Speech</h5>
+                  <p class="card-text text-muted">Convert your text to natural speech</p> 
+                  <small class="text-muted">Ready to use</small>
+                  <div class="mt-3">
+                    <button class="btn btn-primary w-100" data-section="text-to-speech" onclick="window.location.href='tts.html'">Launch Tool</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card feature-card shadow-sm h-100">
+                <div class="card-body">
+                  <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="card-icon">
+                      <i class="fas fa-microphone"></i>
+                    </div>
+                  </div>
+                  <h5 class="card-title">Speech to Text</h5>
+                  <p class="card-text text-muted">Convert spoken language to text</p>
+                 
+                  <small class="text-muted">Ready to use</small>
+                  <div class="mt-3">
+                    <button class="btn btn-primary w-100" data-section="speech-to-text" onclick="window.location.href='stt.html'">Launch Tool</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card feature-card shadow-sm h-100">
+                <div class="card-body">
+                  <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="card-icon">
+                      <i class="fas fa-chart-bar"></i>
+                    </div>
+                  </div>
+                  <h5 class="card-title">Sign Language Charts</h5>
+                  <p class="card-text text-muted">Visual reference for ASL signs</p>
+                  <small class="text-muted">Ready to use</small>
+                  <div class="mt-3">
+                    <button class="btn btn-primary w-100" data-section="sign-language-charts" onclick="window.location.href='Gestures.html'">View Charts</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+<!-- Include Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div class="row mb-4">
+  <div class="col-12">
+    <div class="card shadow-sm">
+      <div class="card-header bg-white">
+        <div class="d-flex justify-content-between align-items-center">
+          <h5 class="card-title mb-0">ASL Learning Progress</h5>
+          <div>
+            <select id="categorySelect" class="form-select form-select-sm">
+              <option value="population" selected>DHH Population</option>
+              <option value="alphabet">Alphabet Learning (%)</option>
+              <option value="numbers">Numbers Learning (%)</option>
+              <option value="phrases">Common Phrases Mastery (%)</option>
+              <option value="conversation">Conversation Skills (%)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="chart-container" style="position: relative; height:300px; width:1250px; width:100%;">
+          <canvas id="aslChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const ctx = document.getElementById('aslChart').getContext('2d');
+
+  // Create gradient
+  const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+  gradient.addColorStop(0, 'rgba(54, 162, 235, 0.8)');
+  gradient.addColorStop(1, 'rgba(54, 162, 235, 0.2)');
+
+  const labels = [2001, 2011, 2015, 2020, 2023];
+
+  // Data for different categories
+  const chartDataByCategory = {
+    population: [50, 63, 65, 67, 70],
+    alphabet: [10, 30, 50, 60, 80],
+    numbers: [5, 20, 40, 55, 75],
+    phrases: [2, 10, 30, 45, 65],
+    conversation: [0, 5, 20, 35, 50]
+  };
+
+  const chartTitleByCategory = {
+    population: 'DHH Population (Millions)',
+    alphabet: 'Alphabet Learning (%)',
+    numbers: 'Numbers Learning (%)',
+    phrases: 'Common Phrases Mastery (%)',
+    conversation: 'Conversation Skills (%)'
+  };
+
+  let currentCategory = 'population';
+
+  const chart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: chartTitleByCategory[currentCategory],
+        data: chartDataByCategory[currentCategory],
+        backgroundColor: gradient,
+        borderColor: 'rgba(54, 162, 235, 1)',
+        borderWidth: 1,
+        borderRadius: 8,
+        barThickness: 40
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            color: '#444'
+          },
+          title: {
+            display: true,
+            text: '',
+            color: '#333',
+            font: {
+              size: 14,
+              weight: 'bold'
+            }
+          }
+        },
+        x: {
+          ticks: {
+            color: '#444'
+          },
+          title: {
+            display: true,
+            text: 'Year',
+            color: '#333',
+            font: {
+              size: 14,
+              weight: 'bold'
+            }
+          }
+        }
+      },
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          backgroundColor: 'rgba(0,0,0,0.7)',
+          callbacks: {
+            label: function(context) {
+              return `${context.parsed.y}${currentCategory === 'population' ? ' million' : '%'}`;
+            }
+          }
+        }
+      }
+    }
+  });
+
+  // Handle category change
+  document.getElementById('categorySelect').addEventListener('change', function () {
+    const selected = this.value;
+    currentCategory = selected;
+
+    chart.data.datasets[0].data = chartDataByCategory[selected];
+    chart.data.datasets[0].label = chartTitleByCategory[selected];
+    chart.options.scales.y.title.text = selected === 'population' ? 'Population (Millions)' : 'Percentage (%)';
+    chart.update();
+  });
+</script>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>User Info Display</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/a2c3f8a14d.js" crossorigin="anonymous"></script>
+</head>
+<body class="bg-light">
+
+<div class="container py-5">
+  <div class="card shadow-sm mb-4">
+    <div class="card-header bg-white">
+      <h5 class="card-title mb-0">Your Submitted Information</h5>
+    </div>
+    <div class="card-body p-0">
+      <ul class="list-group list-group-flush" id="userInfoList">
+        <!-- Firebase data will be injected here -->
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+
+<script>
+  // Your Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyAQ_y_einsNojJNTvSth1burw5Ud71hnwY",
+  authDomain: "ai-shravan.firebaseapp.com",
+  projectId: "ai-shravan",
+  storageBucket: "ai-shravan.firebasestorage.app",
+  messagingSenderId: "947415877720",
+  appId: "1:947415877720:web:374a581af9d8e4ce26a22d",
+  measurementId: "G-V1KVN7MM5N"
+  };
+
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  // Fetch the latest user data from Firestore
+  db.collection("dhhSurveyResponses")
+    .orderBy("timestamp", "desc")
+    .limit(1)
+    .get()
+    .then(snapshot => {
+      const list = document.getElementById("userInfoList");
+      if (snapshot.empty) {
+        list.innerHTML = `<li class="list-group-item p-3 text-muted">No submission found.</li>`;
+        return;
+      }
+
+      const data = snapshot.docs[0].data();
+      const items = [
+        `<li class="list-group-item p-3"><i class="fas fa-user me-2"></i><strong>Name:</strong> ${data.name}</li>`,
+        `<li class="list-group-item p-3"><i class="fas fa-envelope me-2"></i><strong>Email:</strong> ${data.email}</li>`,
+        `<li class="list-group-item p-3"><i class="fas fa-briefcase me-2"></i><strong>Occupation:</strong> ${data.occupation}</li>`,
+        `<li class="list-group-item p-3"><i class="fas fa-eye me-2"></i><strong>Interaction with DHH:</strong> ${data.interactionFrequency}</li>`,
+        `<li class="list-group-item p-3"><i class="fas fa-building me-2"></i><strong>Known Organizations:</strong> ${data.knownOrganizations}</li>`,
+        `<li class="list-group-item p-3"><i class="fas fa-hands me-2"></i><strong>Sign Language Knowledge:</strong> ${data.signLanguageKnowledge}</li>`,
+        `<li class="list-group-item p-3"><i class="fas fa-heart me-2"></i><strong>Willing to Volunteer:</strong> ${data.volunteerSupport}</li>`,
+        `<li class="list-group-item p-3"><i class="fas fa-comment-dots me-2"></i><strong>Suggestions:</strong> ${data.suggestions}</li>`
+      ];
+      list.innerHTML = items.join('');
+    })
+    .catch(err => {
+      document.getElementById("userInfoList").innerHTML = `<li class="list-group-item p-3 text-danger">Error loading data: ${err.message}</li>`;
+    });
+</script>
+
+</body>
+</html>
+
+        <!-- ASL Recognition Section -->
+        <section id="asl-recognition-section" class="feature-section">
+          <div class="card shadow-sm">
+            <div class="card-header bg-white">
+              <h5 class="card-title mb-0">ASL Gesture Recognition</h5>
+            </div>
+            <div class="card-body">
+              <div class="feature-placeholder">
+                <div class="feature-icon">
+                  <i class="fas fa-camera"></i>
+                </div>
+                <p class="feature-message">The ASL Recognition tool allows you to convert hand gestures to text in real-time.</p>
+                <button class="btn btn-primary" onclick="window.location.href='asl-recognition.html'">Open ASL Recognition Tool</button>
+              </div>
+            </div>
+          </div>
+        </section>
+        
+        <!-- Text to Speech Section -->
+        <section id="text-to-speech-section" class="feature-section">
+          <div class="card shadow-sm">
+            <div class="card-header bg-white">
+              <h5 class="card-title mb-0">Text to Speech</h5>
+            </div>
+            <div class="card-body">
+              <div class="feature-placeholder">
+                <div class="feature-icon">
+                  <i class="fas fa-volume-up"></i>
+                </div>
+                <p class="feature-message">Convert written text to natural-sounding speech with customizable voices.</p>
+                <button class="btn btn-primary" onclick="window.location.href='text-to-speech.html'">Open Text to Speech Tool</button>
+              </div>
+            </div>
+          </div>
+        </section>
+        
+        <!-- Speech to Text Section -->
+        <section id="speech-to-text-section" class="feature-section">
+          <div class="card shadow-sm">
+            <div class="card-header bg-white">
+              <h5 class="card-title mb-0">Speech to Text</h5>
+            </div>
+            <div class="card-body">
+              <div class="feature-placeholder">
+                <div class="feature-icon">
+                  <i class="fas fa-microphone"></i>
+                </div>
+                <p class="feature-message">Convert spoken language to written text with high accuracy.</p>
+                <button class="btn btn-primary" onclick="window.location.href='speech-to-text.html'">Open Speech to Text Tool</button>
+              </div>
+            </div>
+          </div>
+        </section>
+       
+  </body>      
