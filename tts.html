@@ -117,9 +117,9 @@ function populateVoices() {
         const optgroup = document.createElement('optgroup');
         optgroup.label = lang;
         voicesByLang[lang].forEach((voice, index) => {
-            const option = document.createElement('option');
-            option.value = index;
-            option.textContent = `${voice.name} (${voice.lang})`;
+        const option = document.createElement('option');
+        option.value = index;
+        option.textContent = `${voice.name} (${voice.lang})`;
             optgroup.appendChild(option);
         });
         voiceSelect.appendChild(optgroup);

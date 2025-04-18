@@ -349,7 +349,7 @@
             canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
             canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
 
-            if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+                if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
                 const landmarks = results.multiHandLandmarks[0];
                 drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS, {color: '#00FF00', lineWidth: 2});
                 drawLandmarks(canvasCtx, landmarks, {color: '#FF0000', lineWidth: 1});
@@ -374,7 +374,7 @@
                     confidenceValue.textContent = '0%';
                 }
                 lastGesture = gesture;
-            } else {
+                } else {
                 gestureSpan.textContent = 'No hand detected';
                 confidenceValue.textContent = '0%';
             }

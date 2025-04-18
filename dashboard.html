@@ -126,7 +126,7 @@
       </ul>
      
       <div class="sidebar-footer">
-        <button class="btn btn-outline-danger w-100" onclick="window.location.href='index.html'">
+        <button class="btn btn-outline-danger w-100" onclick="handleLogout()">
           <i class="fas fa-sign-out-alt me-2"></i>Logout
         </button>
       </div>
@@ -607,12 +607,37 @@
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
 
+  // Handle logout
+  function handleLogout() {
+    // First sign out from Firebase
+    firebase.auth().signOut()
+      .then(() => {
+        // Clear all storage
+        localStorage.clear();
+        sessionStorage.clear();
+        
+        // Force a complete sign out
+        firebase.auth().signOut().then(() => {
+          // Redirect to index with a timestamp to prevent caching
+          window.location.href = 'index.html?logout=true&t=' + new Date().getTime();
+        });
+      })
+      .catch((error) => {
+        console.error('Error signing out:', error);
+        alert('Error signing out. Please try again.');
+      });
+  }
+
   // Check authentication state
   firebase.auth().onAuthStateChanged((user) => {
-    const userInitials = document.getElementById('userInitials');
-    const userName = document.getElementById('userName');
-
-    if (user) {
+    if (!user) {
+      // If user is not logged in, redirect to index.html
+      window.location.href = 'index.html';
+    } else {
+      // Update user info in the dashboard
+      const userInitials = document.getElementById('userInitials');
+      const userName = document.getElementById('userName');
+      
       // Get user's display name or email
       const displayName = user.displayName || user.email;
       userName.textContent = displayName;
