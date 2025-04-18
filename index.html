@@ -31,11 +31,17 @@
             transform: translateY(-2px);
         }
 
-        .user-profile img {
+        .user-initials {
             width: 32px;
             height: 32px;
             border-radius: 50%;
-            object-fit: cover;
+            background: #2c5282;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
         }
 
         .user-profile span {
@@ -49,6 +55,28 @@
 
         .user-profile-container.show {
             display: block;
+        }
+
+        .locked-feature {
+            opacity: 0.7;
+            position: relative;
+        }
+        
+        .lock-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #dc3545;
+            font-size: 1.5rem;
+        }
+        
+        .icon-square {
+            position: relative;
+        }
+        
+        .locked-feature .btn-secondary {
+            cursor: not-allowed;
         }
     </style>
 </head>
@@ -75,14 +103,11 @@
                             <a onclick="scrollToSection('features')" class="nav-link">Features</a>
                         </li>
                         <li class="nav-item">
-                            <a href="#" class="nav-link">FAQs</a>
-                        </li>
-                        <li class="nav-item">
                             <a href="./About.html" class="nav-link">About</a>
                         </li>
                         <li class="nav-item user-profile-container" id="userProfileContainer">
                             <a href="dashboard.html" class="user-profile">
-                                <img src="https://via.placeholder.com/32" alt="User Profile" id="userProfileImage">
+                                <div class="user-initials" id="userInitials">DD</div>
                                 <span id="userName">User Name</span>
                             </a>
                         </li>
@@ -114,6 +139,9 @@
                     <div class="d-grid gap-3 d-sm-flex justify-content-sm-start mb-5">
                        <a href="https://www.telefonica.com/en/communication-room/blog/artificial-intelligence-transforming-lives-hearing-impaired-hard-hearing-people/#:~:text=One%20resource%20that%20has%20revolutionised,be%20followed%20via%20mobile%20phone."> <button type="button" class="btn btn-primary btn-lg px-4 me-sm-3">Learn More</button></a>
                        
+                    </div>
+                    <div class="alert alert-info" role="alert">
+                        <i class="fas fa-info-circle me-2"></i>Please sign up/login to have a full experience and access additional insights
                     </div>
                 </div>
                 <div class="col-lg-6">
@@ -171,18 +199,18 @@
                 
                 <!-- Feature 3 -->
                 <div class="col">
-                    <div class="feature-card d-flex flex-column h-100">
+                    <div class="feature-card d-flex flex-column h-100 locked-feature">
                         <div class="d-flex align-items-start mb-3">
                             <div class="icon-square flex-shrink-0">
                                 <i class="bi bi-chat-left-dots-fill"></i>
+                                <i class="fas fa-lock lock-icon"></i>
                             </div>
                             <div>
                                 <h3 class="fs-2">Chatbot Support</h3>
                                 <p>Chatbot support for convenience and improved user experience</p>
-                                <a href="./chatbot.html" class="btn btn-primary">
-                                    Try now
-                                    <i class="fas fa-arrow-right ms-1"></i>
-                                </a>
+                                <button class="btn btn-secondary" disabled>
+                                    <i class="fas fa-lock me-2"></i>Login to Access
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -190,18 +218,18 @@
                 
                 <!-- Feature 4 -->
                 <div class="col">
-                    <div class="feature-card d-flex flex-column h-100">
+                    <div class="feature-card d-flex flex-column h-100 locked-feature">
                         <div class="d-flex align-items-start mb-3">
                             <div class="icon-square flex-shrink-0">
                                 <i class="bi bi-play-btn"></i>
+                                <i class="fas fa-lock lock-icon"></i>
                             </div>
                             <div>
                                 <h3 class="fs-2">Video Search</h3>
                                 <p>User can search and find any video related to Sign Languages and learn to communicate without words</p>
-                                <a href="./Searchvid.html" class="btn btn-primary">
-                                    Try now
-                                    <i class="fas fa-arrow-right ms-1"></i>
-                                </a>
+                                <button class="btn btn-secondary" disabled>
+                                    <i class="fas fa-lock me-2"></i>Login to Access
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -341,25 +369,83 @@
             const loginButtonContainer = document.getElementById('loginButtonContainer');
             const logoutButtonContainer = document.getElementById('logoutButtonContainer');
             const userProfileContainer = document.getElementById('userProfileContainer');
-            const userProfileImage = document.getElementById('userProfileImage');
+            const userInitials = document.getElementById('userInitials');
             const userName = document.getElementById('userName');
+            const infoAlert = document.querySelector('.alert-info');
+            const lockedFeatures = document.querySelectorAll('.locked-feature');
 
             if (user) {
                 // User is signed in
                 loginButtonContainer.classList.add('d-none');
                 logoutButtonContainer.classList.remove('d-none');
                 userProfileContainer.classList.add('show');
+                infoAlert.classList.add('d-none');
                 
-                // Update user profile
-                if (user.photoURL) {
-                    userProfileImage.src = user.photoURL;
+                // Get user's display name or email
+                const displayName = user.displayName || user.email;
+                userName.textContent = displayName;
+                
+                // Generate initials
+                let initials = '';
+                if (user.displayName) {
+                    initials = user.displayName
+                        .split(' ')
+                        .map(word => word[0])
+                        .join('')
+                        .toUpperCase()
+                        .substring(0, 2);
+                } else if (user.email) {
+                    initials = user.email.substring(0, 2).toUpperCase();
                 }
-                userName.textContent = user.displayName || user.email;
+                userInitials.textContent = initials;
+
+                // Unlock features
+                lockedFeatures.forEach(feature => {
+                    feature.classList.remove('locked-feature');
+                    const icon = feature.querySelector('.lock-icon');
+                    if (icon) icon.remove();
+                    
+                    const button = feature.querySelector('button');
+                    if (button) {
+                        const link = document.createElement('a');
+                        // Set the correct href based on the feature
+                        if (feature.querySelector('h3').textContent === 'Chatbot Support') {
+                            link.href = './chatbot.html';
+                        } else if (feature.querySelector('h3').textContent === 'Video Search') {
+                            link.href = './Searchvid.html';
+                        }
+                        link.className = 'btn btn-primary';
+                        link.innerHTML = 'Try now <i class="fas fa-arrow-right ms-1"></i>';
+                        button.parentNode.replaceChild(link, button);
+                    }
+                });
             } else {
                 // User is signed out
                 loginButtonContainer.classList.remove('d-none');
                 logoutButtonContainer.classList.add('d-none');
                 userProfileContainer.classList.remove('show');
+                infoAlert.classList.remove('d-none');
+
+                // Lock features
+                lockedFeatures.forEach(feature => {
+                    feature.classList.add('locked-feature');
+                    const iconSquare = feature.querySelector('.icon-square');
+                    if (!feature.querySelector('.lock-icon')) {
+                        const lockIcon = document.createElement('i');
+                        lockIcon.className = 'fas fa-lock lock-icon';
+                        iconSquare.appendChild(lockIcon);
+                    }
+                    
+                    const link = feature.querySelector('a');
+                    if (link) {
+                        const button = document.createElement('button');
+                        button.className = 'btn btn-secondary';
+                        button.disabled = true;
+                        button.setAttribute('data-href', link.href);
+                        button.innerHTML = '<i class="fas fa-lock me-2"></i>Login to Access';
+                        link.parentNode.replaceChild(button, link);
+                    }
+                });
             }
         });
 

@@ -134,12 +134,18 @@
     <script>
         let recognition;
         let isRecording = false;
-        let transcript = [];
 
         document.addEventListener("DOMContentLoaded", () => {
             const startButton = document.getElementById("start-btn");
             const stopButton = document.getElementById("stop-btn");
             const outputDiv = document.getElementById("transcription");
+
+            // Check if running on HTTPS
+            if (window.location.protocol !== 'https:') {
+                outputDiv.innerHTML = "⚠️ Speech recognition requires HTTPS. Please use a secure connection.";
+                startButton.disabled = true;
+                return;
+            }
 
             if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
                 alert("Speech recognition is not supported in this browser.");
@@ -149,39 +155,96 @@
             recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
             recognition.continuous = true;
             recognition.interimResults = true;
-            recognition.lang = "en-US"; // Change this for different languages
+            recognition.lang = "en-US";
+
+            recognition.onstart = () => {
+                console.log("Speech recognition started");
+                outputDiv.innerHTML = "🎤 Listening...";
+                outputDiv.removeAttribute("data-placeholder");
+            };
 
             recognition.onresult = (event) => {
-                let finalText = "";
-                for (let i = event.resultIndex; i < event.results.length; i++) {
-                    let transcriptText = event.results[i][0].transcript.trim();
-                    if (event.results[i].isFinal) {
-                        transcript.push(transcriptText);
-                    } else {
-                        finalText = transcriptText;
-                    }
+                console.log("Speech recognition result received");
+                const result = event.results[event.results.length - 1];
+                const transcript = result[0].transcript;
+                
+                if (result.isFinal) {
+                    console.log("Final transcript:", transcript);
+                    outputDiv.innerHTML = transcript;
+                } else {
+                    console.log("Interim transcript:", transcript);
+                    outputDiv.innerHTML = transcript;
                 }
-                outputDiv.innerHTML = transcript.join(". ") + (finalText ? " " + finalText : "");
-                outputDiv.removeAttribute("data-placeholder");
             };
 
             recognition.onerror = (event) => {
                 console.error("Speech recognition error:", event.error);
+                let errorMessage = "Error occurred. ";
+                
+                switch(event.error) {
+                    case 'network':
+                        errorMessage = "Network error. Please check your internet connection and try again.";
+                        break;
+                    case 'not-allowed':
+                        errorMessage = "Microphone access denied. Please allow microphone access and try again.";
+                        break;
+                    case 'service-not-allowed':
+                        errorMessage = "Speech recognition service not allowed. Please try again later.";
+                        break;
+                    case 'no-speech':
+                        errorMessage = "No speech detected. Please speak clearly.";
+                        break;
+                    default:
+                        errorMessage = `Error: ${event.error}. Please try again.`;
+                }
+                
+                outputDiv.innerHTML = errorMessage;
+                isRecording = false;
+                startButton.disabled = false;
+                stopButton.disabled = true;
+            };
+
+            recognition.onend = () => {
+                console.log("Speech recognition ended");
+                if (isRecording) {
+                    console.log("Restarting recognition...");
+                    try {
+                        recognition.start();
+                    } catch (error) {
+                        console.error("Error restarting recognition:", error);
+                        outputDiv.innerHTML = "Error restarting recognition. Please try again.";
+                        isRecording = false;
+                        startButton.disabled = false;
+                        stopButton.disabled = true;
+                    }
+                }
             };
 
             startButton.addEventListener("click", () => {
+                console.log("Start button clicked");
                 if (!isRecording) {
-                    recognition.start();
-                    isRecording = true;
-                    outputDiv.innerHTML = "🎤 Listening...";
-                    outputDiv.style.opacity = "1";
+                    try {
+                        recognition.start();
+                        isRecording = true;
+                        startButton.disabled = true;
+                        stopButton.disabled = false;
+                    } catch (error) {
+                        console.error("Error starting recognition:", error);
+                        outputDiv.innerHTML = "Error starting recognition. Please try again.";
+                        isRecording = false;
+                        startButton.disabled = false;
+                        stopButton.disabled = true;
+                    }
                 }
             });
 
             stopButton.addEventListener("click", () => {
+                console.log("Stop button clicked");
                 if (isRecording) {
                     recognition.stop();
                     isRecording = false;
+                    startButton.disabled = false;
+                    stopButton.disabled = true;
                 }
             });
         });

@@ -36,7 +36,25 @@
         margin-left: 0 !important;
       }
     }
+    
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #2c5282;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 16px;
+      margin-right: 10px;
+    }
   </style>
+  <!-- Add Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
 </head>
 <body>
   <div class="d-flex">
@@ -64,6 +82,12 @@
           </a>
         </li>
         <li class="menu-item">
+          <a href="#video-search" class="menu-link" data-section="video-search" onclick="window.location.href='Searchvid.html'">
+            <span class="menu-icon"><i class="fas fa-video"></i></span>
+            <span class="menu-text">Sign Language Videos</span>
+          </a>
+        </li>
+        <li class="menu-item">
           <a href="#learning-resources" class="menu-link" data-section="learning-resources" onclick="window.location.href='up.html'">
             <span class="menu-icon"><i class="fas fa-graduation-cap"></i></span>
             <span class="menu-text">Learning Resources</span>
@@ -82,12 +106,18 @@
             </a>
           </li>
         <li class="menu-item">
-          <a href="#settings" class="menu-link" data-section="settings">
+          <a href="settings.html" class="menu-link" data-section="settings">
             <span class="menu-icon"><i class="fas fa-cog"></i></span>
             <span class="menu-text">Settings</span>
           </a>
         </li>
         
+        <li class="menu-item">
+          <a href="index.html" class="menu-link" data-section="home">
+            <span class="menu-icon"><i class="fas fa-home"></i></span>
+            <span class="menu-text">Back to Home</span>
+          </a>
+        </li>
         
       </ul>
      
@@ -109,19 +139,12 @@
             <h1 class="h5 mb-0" id="pageTitle">Dashboard</h1>
           </div>
           <div class="d-flex align-items-center">
-            <div class="position-relative me-3">
-              <i class="fas fa-bell"></i>
-              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary">
-                3
-              </span>
-            </div>
-
-            <!--user login inf0-->
+            <!--user login info-->
             <div class="d-flex align-items-center">
-              <div class="avatar me-2">JS</div>
+              <div class="avatar" id="userInitials">JS</div>
               <div class="d-none d-sm-block">
-                <div class="fw-bold small">John Smith</div>
-                <div class="text-muted small">Premium User</div>
+                <div class="fw-bold small" id="userName">Fetching...</div>
+                <div class="text-muted small">Loyal User</div>
               </div>
             </div>
           </div>
@@ -146,7 +169,7 @@
             </div>
           </div>
           <div class="card-body">
-            <div class="chart-container" style="position: relative; height:300px; width:700px; max-width:600px;">
+            <div class="chart-container" style="position: relative; height:300px; width:100%;">
               <canvas id="deafInterpreterChart"></canvas>
             </div>
           </div>
@@ -196,11 +219,20 @@
           options: {
             responsive: true,
             maintainAspectRatio: false,
+            layout: {
+              padding: {
+                left: 10,
+                right: 10,
+                top: 10,
+                bottom: 10
+              }
+            },
             scales: {
               y: {
                 beginAtZero: true,
                 ticks: {
-                  color: '#444'
+                  color: '#444',
+                  maxTicksLimit: 6
                 },
                 title: {
                   display: true,
@@ -230,9 +262,11 @@
             plugins: {
               legend: {
                 display: true,
+                position: 'top',
                 labels: {
                   color: '#333',
-                  boxWidth: 20
+                  boxWidth: 20,
+                  padding: 15
                 }
               },
               tooltip: {
@@ -555,25 +589,45 @@
   </div>
 </div>
 
-<!-- Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
-
 <script>
-  // Your Firebase config
+  // Initialize Firebase
   const firebaseConfig = {
     apiKey: "AIzaSyAQ_y_einsNojJNTvSth1burw5Ud71hnwY",
-  authDomain: "ai-shravan.firebaseapp.com",
-  projectId: "ai-shravan",
-  storageBucket: "ai-shravan.firebasestorage.app",
-  messagingSenderId: "947415877720",
-  appId: "1:947415877720:web:374a581af9d8e4ce26a22d",
-  measurementId: "G-V1KVN7MM5N"
+    authDomain: "ai-shravan.firebaseapp.com",
+    projectId: "ai-shravan",
+    storageBucket: "ai-shravan.firebasestorage.app",
+    messagingSenderId: "947415877720",
+    appId: "1:947415877720:web:374a581af9d8e4ce26a22d",
+    measurementId: "G-V1KVN7MM5N"
   };
-
-  // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
+
+  // Check authentication state
+  firebase.auth().onAuthStateChanged((user) => {
+    const userInitials = document.getElementById('userInitials');
+    const userName = document.getElementById('userName');
+
+    if (user) {
+      // Get user's display name or email
+      const displayName = user.displayName || user.email;
+      userName.textContent = displayName;
+      
+      // Generate initials
+      let initials = '';
+      if (user.displayName) {
+        initials = user.displayName
+          .split(' ')
+          .map(word => word[0])
+          .join('')
+          .toUpperCase()
+          .substring(0, 2);
+      } else if (user.email) {
+        initials = user.email.substring(0, 2).toUpperCase();
+      }
+      userInitials.textContent = initials;
+    }
+  });
 
   // Fetch the latest user data from Firestore
   db.collection("dhhSurveyResponses")

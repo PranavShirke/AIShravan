@@ -4,152 +4,152 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Language Video Finder</title>
+    
+    <!-- Common CSS -->
+    <link rel="stylesheet" href="common.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Font Settings -->
+    <script src="font-settings.js"></script>
+    
     <style>
-       /* General Styling */
-/* Animated Gradient Background */
-/* Smooth Animated Gradient Background */
-/* Animated Multi-Color Gradient Background */
-body {
-    font-family: 'Poppins', sans-serif;
-    text-align: center;
-    /* Updated background with more modern, sleek colors */
-    background: linear-gradient(135deg, #1a2a6c, #198cde, #14d8ea);
-    background-size: 400% 400%;
-    color: white;
-    padding: 20px;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    animation: gradientBG 15s ease infinite;
-}
+        /* General Styling */
+        body {
+            text-align: center;
+            /* Updated background with more modern, sleek colors */
+            background: linear-gradient(135deg, #1a2a6c, #198cde, #14d8ea);
+            background-size: 400% 400%;
+            color: white;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            animation: gradientBG 15s ease infinite;
+        }
 
-/* Slightly slower, smoother animation for a more sleek feel */
-@keyframes gradientBG {
-    0% {
-        background-position: 0% 50%;
-    }
-    50% {
-        background-position: 100% 50%;
-    }
-    100% {
-        background-position: 0% 50%;
-    }
-}
+        /* Slightly slower, smoother animation for a more sleek feel */
+        @keyframes gradientBG {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
 
-/* Input Box - Sleeker with glass morphism effect */
-input {
-    font-size: 18px;
-    padding: 16px;
-    width: 60%;
-    max-width: 400px;
-    border: none;
-    border-radius: 12px;
-    outline: none;
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
-    color: white;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
+        /* Input Box - Sleeker with glass morphism effect */
+        input {
+            padding: 16px;
+            width: 60%;
+            max-width: 400px;
+            border: none;
+            border-radius: 12px;
+            outline: none;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
 
-input::placeholder {
-    color: rgba(255, 255, 255, 0.7);
-}
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
 
-input:focus {
-    background: rgba(255, 255, 255, 0.2);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-    transform: translateY(-2px);
-}
+        input:focus {
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
 
-/* Buttons - More modern and sleek */
-button {
-    font-size: 18px;
-    padding: 16px 28px;
-    margin: 10px;
-    cursor: pointer;
-    border: none;
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(10px);
-    color: white;
-    transition: all 0.3s ease;
-    font-weight: 600;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
+        /* Buttons - More modern and sleek */
+        button {
+            padding: 16px 28px;
+            margin: 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            color: white;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
 
-button:hover {
-    background: rgba(255, 255, 255, 0.3);
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-}
+        button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
 
-button:active {
-    transform: translateY(0);
-}
+        button:active {
+            transform: translateY(0);
+        }
 
-/* Message Styling */
-#message {
-    font-size: 18px;
-    margin-top: 16px;
-    font-weight: 500;
-    padding: 10px;
-    border-radius: 8px;
-    background: rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(5px);
-    display: inline-block;
-}
+        /* Message Styling */
+        #message {
+            margin-top: 16px;
+            font-weight: 500;
+            padding: 10px;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(5px);
+            display: inline-block;
+        }
 
-/* Video Container */
-#video-container {
-    margin-top: 30px;
-    display: none;
-    width: 90%;
-    max-width: 1200px;
-    background: rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(10px);
-    padding: 20px;
-    border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-}
+        /* Video Container */
+        #video-container {
+            margin-top: 30px;
+            display: none;
+            width: 90%;
+            max-width: 1200px;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
 
-/* Video Frame - Bigger & Responsive with improved aspect ratio */
-iframe {
-    width: 100%;
-    max-width: 1100px;
-    aspect-ratio: 16/9;
-    height: auto;
-    border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-    border: none;
-}
+        /* Video Frame - Bigger & Responsive with improved aspect ratio */
+        iframe {
+            width: 100%;
+            max-width: 1100px;
+            aspect-ratio: 16/9;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            border: none;
+        }
 
-.back-button {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 25px;
-    cursor: pointer;
-    transition: 0.3s;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-weight: 600;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
 
-.back-button:hover {
-    background: rgba(255, 255, 255, 0.3);
-    transform: translateY(-2px);
-}
-
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
     </style>
 </head>
 <body>
@@ -202,6 +202,5 @@ iframe {
             }
         }
     </script>
-
 </body>
 </html>

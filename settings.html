@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - AI Shravan</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+    <style>
+        body {
+            background: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .settings-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .settings-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .settings-header {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .settings-body {
+            padding: 20px;
+        }
+
+        .chat-history-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            transition: all 0.3s ease;
+        }
+
+        .chat-history-item:hover {
+            background: #f8f9fa;
+        }
+
+        .account-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .account-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #2196f3;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-right: 20px;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .back-button:hover {
+            background: white;
+            transform: translateY(-2px);
+        }
+
+        .settings-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 15px;
+            color: #444;
+        }
+
+        .btn-save {
+            background: #2196f3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-save:hover {
+            background: #1976d2;
+            transform: translateY(-2px);
+        }
+
+        /* Font Settings Styles */
+        .font-settings {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .font-control {
+            margin-bottom: 15px;
+        }
+
+        .font-control label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-color);
+        }
+
+        .font-size-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .font-size-control input[type="range"] {
+            flex: 1;
+        }
+
+        .font-size-value {
+            min-width: 40px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .font-family-select {
+            width: 100%;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-color);
+        }
+
+        .font-preview {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 5px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .font-controls-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .btn-reset {
+            background: #f44336;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-reset:hover {
+            background: #d32f2f;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <button class="back-button" onclick="window.history.back()">
+        <i class="fas fa-arrow-left"></i> Back
+    </button>
+
+    <div class="settings-container">
+        <h1 class="settings-title">Settings</h1>
+
+        <!-- Font Settings Section -->
+        <div class="font-settings">
+            <h2>Font Settings</h2>
+            <div class="font-control">
+                <label for="fontSize">Font Size</label>
+                <div class="font-size-control">
+                    <input type="range" id="fontSize" min="12" max="24" value="16">
+                    <span class="font-size-value">16px</span>
+                </div>
+            </div>
+            <div class="font-control">
+                <label for="fontFamily">Font Family</label>
+                <select id="fontFamily" class="font-family-select">
+                    <option value="'Poppins', sans-serif">Poppins</option>
+                    <option value="'Roboto', sans-serif">Roboto</option>
+                    <option value="'Open Sans', sans-serif">Open Sans</option>
+                    <option value="'Arial', sans-serif">Arial</option>
+                    <option value="'Times New Roman', serif">Times New Roman</option>
+                </select>
+            </div>
+            <div class="font-preview" id="fontPreview">
+                This is a preview of how your text will look with the selected font settings.
+            </div>
+            <div class="font-controls-footer">
+                <button class="btn-reset" onclick="resetFontSettings()">
+                    <i class="fas fa-undo me-2"></i>Reset to Default
+                </button>
+            </div>
+        </div>
+
+        <!-- Account Information -->
+        <div class="settings-card">
+            <div class="settings-header">
+                <h2 class="section-title">Account Information</h2>
+            </div>
+            <div class="settings-body">
+                <div class="account-info">
+                    <div class="account-avatar" id="userAvatar">JS</div>
+                    <div>
+                        <h3 id="userName">Loading...</h3>
+                        <p id="userEmail">Loading...</p>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Display Name</label>
+                    <input type="text" class="form-control" id="displayName" placeholder="Enter your display name">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" placeholder="Enter your email">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Change Password</label>
+                    <input type="password" class="form-control" id="newPassword" placeholder="New Password">
+                </div>
+                <button class="btn-save" onclick="saveAccountChanges()">
+                    <i class="fas fa-save me-2"></i>Save Changes
+                </button>
+            </div>
+        </div>
+
+        <!-- Chat History -->
+        <div class="settings-card">
+            <div class="settings-header">
+                <h2 class="section-title">Chat History</h2>
+            </div>
+            <div class="settings-body">
+                <div class="mb-3">
+                    <button class="btn btn-outline-danger me-2" onclick="clearChatHistory()">
+                        <i class="fas fa-trash me-2"></i>Clear All History
+                    </button>
+                    <button class="btn btn-outline-primary" onclick="exportChatHistory()">
+                        <i class="fas fa-download me-2"></i>Export History
+                    </button>
+                </div>
+                <div id="chatHistory">
+                    <!-- Chat history items will be dynamically added here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyAQ_y_einsNojJNTvSth1burw5Ud71hnwY",
+            authDomain: "ai-shravan.firebaseapp.com",
+            projectId: "ai-shravan",
+            storageBucket: "ai-shravan.firebasestorage.app",
+            messagingSenderId: "947415877720",
+            appId: "1:947415877720:web:374a581af9d8e4ce26a22d",
+            measurementId: "G-V1KVN7MM5N"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        // Check authentication state
+        auth.onAuthStateChanged((user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+            loadUserInfo(user);
+            loadChatHistory(user.uid);
+        });
+
+        // Account management functionality
+        function loadUserInfo(user) {
+            const userAvatar = document.getElementById('userAvatar');
+            const userName = document.getElementById('userName');
+            const userEmail = document.getElementById('userEmail');
+            const displayName = document.getElementById('displayName');
+            const email = document.getElementById('email');
+
+            // Get user's display name or email
+            const name = user.displayName || user.email.split('@')[0];
+            const emailAddress = user.email;
+
+            // Generate initials for avatar
+            let initials = '';
+            if (user.displayName) {
+                initials = user.displayName
+                    .split(' ')
+                    .map(word => word[0])
+                    .join('')
+                    .toUpperCase()
+                    .substring(0, 2);
+            } else {
+                initials = emailAddress.substring(0, 2).toUpperCase();
+            }
+
+            // Update UI
+            userAvatar.textContent = initials;
+            userName.textContent = name;
+            userEmail.textContent = emailAddress;
+            displayName.value = name;
+            email.value = emailAddress;
+        }
+
+        function saveAccountChanges() {
+            const user = auth.currentUser;
+            if (!user) return;
+
+            const displayName = document.getElementById('displayName').value;
+            const newPassword = document.getElementById('newPassword').value;
+
+            // Update display name
+            user.updateProfile({
+                displayName: displayName
+            }).then(() => {
+                // Update Firestore
+                return db.collection('users').doc(user.uid).update({
+                    displayName: displayName
+                });
+            }).then(() => {
+                // Update password if provided
+                if (newPassword) {
+                    return user.updatePassword(newPassword);
+                }
+            }).then(() => {
+                alert('Account changes saved successfully!');
+                loadUserInfo(user);
+            }).catch(error => {
+                console.error('Error saving changes:', error);
+                alert('Error saving changes: ' + error.message);
+            });
+        }
+
+        // Chat history functionality
+        function loadChatHistory(userId) {
+            const chatHistoryContainer = document.getElementById('chatHistory');
+            
+            // Fetch chat history from Firestore
+            db.collection('chatHistory')
+                .where('userId', '==', userId)
+                .orderBy('timestamp', 'desc')
+                .limit(50)
+                .get()
+                .then(snapshot => {
+                    chatHistoryContainer.innerHTML = '';
+                    if (snapshot.empty) {
+                        chatHistoryContainer.innerHTML = '<p class="text-muted">No chat history available.</p>';
+                        return;
+                    }
+
+                    snapshot.forEach(doc => {
+                        const chat = doc.data();
+                        const chatItem = document.createElement('div');
+                        chatItem.className = 'chat-history-item';
+                        chatItem.innerHTML = `
+                            <div class="d-flex justify-content-between">
+                                <span>${chat.message}</span>
+                                <small class="text-muted">${new Date(chat.timestamp).toLocaleString()}</small>
+                            </div>
+                        `;
+                        chatHistoryContainer.appendChild(chatItem);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error loading chat history:', error);
+                    chatHistoryContainer.innerHTML = '<p class="text-danger">Error loading chat history.</p>';
+                });
+        }
+
+        function clearChatHistory() {
+            if (confirm('Are you sure you want to clear all chat history? This action cannot be undone.')) {
+                const user = auth.currentUser;
+                if (!user) return;
+
+                db.collection('chatHistory')
+                    .where('userId', '==', user.uid)
+                    .get()
+                    .then(snapshot => {
+                        const batch = db.batch();
+                        snapshot.forEach(doc => {
+                            batch.delete(doc.ref);
+                        });
+                        return batch.commit();
+                    })
+                    .then(() => {
+                        document.getElementById('chatHistory').innerHTML = '<p class="text-muted">Chat history cleared.</p>';
+                    })
+                    .catch(error => {
+                        console.error('Error clearing chat history:', error);
+                        alert('Error clearing chat history: ' + error.message);
+                    });
+            }
+        }
+
+        function exportChatHistory() {
+            const user = auth.currentUser;
+            if (!user) return;
+
+            db.collection('chatHistory')
+                .where('userId', '==', user.uid)
+                .orderBy('timestamp', 'desc')
+                .get()
+                .then(snapshot => {
+                    const chatHistory = [];
+                    snapshot.forEach(doc => {
+                        const chat = doc.data();
+                        chatHistory.push({
+                            message: chat.message,
+                            timestamp: new Date(chat.timestamp).toLocaleString()
+                        });
+                    });
+
+                    // Create and download CSV file
+                    const csvContent = "data:text/csv;charset=utf-8," 
+                        + "Message,Timestamp\n"
+                        + chatHistory.map(chat => `"${chat.message}","${chat.timestamp}"`).join("\n");
+                    
+                    const encodedUri = encodeURI(csvContent);
+                    const link = document.createElement("a");
+                    link.setAttribute("href", encodedUri);
+                    link.setAttribute("download", "chat_history.csv");
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                })
+                .catch(error => {
+                    console.error('Error exporting chat history:', error);
+                    alert('Error exporting chat history: ' + error.message);
+                });
+        }
+
+        // Font Settings
+        const fontSizeInput = document.getElementById('fontSize');
+        const fontSizeValue = document.querySelector('.font-size-value');
+        const fontFamilySelect = document.getElementById('fontFamily');
+        const fontPreview = document.getElementById('fontPreview');
+
+        // Load saved font settings
+        function loadFontSettings() {
+            const savedFontSize = localStorage.getItem('fontSize');
+            const savedFontFamily = localStorage.getItem('fontFamily');
+            
+            if (savedFontSize) {
+                fontSizeInput.value = savedFontSize;
+                fontSizeValue.textContent = `${savedFontSize}px`;
+                document.documentElement.style.setProperty('--font-size', `${savedFontSize}px`);
+            }
+            
+            if (savedFontFamily) {
+                fontFamilySelect.value = savedFontFamily;
+                document.documentElement.style.setProperty('--font-family', savedFontFamily);
+            }
+            
+            updateFontPreview();
+        }
+
+        // Update font preview
+        function updateFontPreview() {
+            const fontSize = fontSizeInput.value;
+            const fontFamily = fontFamilySelect.value;
+            
+            fontPreview.style.fontSize = `${fontSize}px`;
+            fontPreview.style.fontFamily = fontFamily;
+        }
+
+        // Save font settings
+        function saveFontSettings() {
+            const fontSize = fontSizeInput.value;
+            const fontFamily = fontFamilySelect.value;
+            
+            localStorage.setItem('fontSize', fontSize);
+            localStorage.setItem('fontFamily', fontFamily);
+            
+            document.documentElement.style.setProperty('--font-size', `${fontSize}px`);
+            document.documentElement.style.setProperty('--font-family', fontFamily);
+            
+            // Save to Firestore if user is logged in
+            const user = auth.currentUser;
+            if (user) {
+                db.collection('users').doc(user.uid).update({
+                    fontSize: fontSize,
+                    fontFamily: fontFamily
+                }).catch(error => {
+                    console.error("Error saving font settings:", error);
+                });
+            }
+        }
+
+        // Event listeners for font controls
+        fontSizeInput.addEventListener('input', () => {
+            fontSizeValue.textContent = `${fontSizeInput.value}px`;
+            updateFontPreview();
+        });
+
+        fontFamilySelect.addEventListener('change', updateFontPreview);
+
+        // Save settings when controls change
+        fontSizeInput.addEventListener('change', saveFontSettings);
+        fontFamilySelect.addEventListener('change', saveFontSettings);
+
+        // Load font settings when page loads
+        document.addEventListener('DOMContentLoaded', loadFontSettings);
+
+        // Reset font settings
+        function resetFontSettings() {
+            // Default values
+            const defaultFontSize = '16';
+            const defaultFontFamily = "'Poppins', sans-serif";
+
+            // Update UI
+            fontSizeInput.value = defaultFontSize;
+            fontSizeValue.textContent = `${defaultFontSize}px`;
+            fontFamilySelect.value = defaultFontFamily;
+            updateFontPreview();
+
+            // Save to localStorage
+            localStorage.setItem('fontSize', defaultFontSize);
+            localStorage.setItem('fontFamily', defaultFontFamily);
+
+            // Update CSS variables
+            document.documentElement.style.setProperty('--font-size', `${defaultFontSize}px`);
+            document.documentElement.style.setProperty('--font-family', defaultFontFamily);
+
+            // Save to Firestore if user is logged in
+            const user = auth.currentUser;
+            if (user) {
+                db.collection('users').doc(user.uid).update({
+                    fontSize: defaultFontSize,
+                    fontFamily: defaultFontFamily
+                }).catch(error => {
+                    console.error("Error saving font settings:", error);
+                });
+            }
+
+            // Show success message
+            alert('Font settings have been reset to default values.');
+        }
+    </script>
+</body>
+</html> 
