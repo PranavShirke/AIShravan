@@ -110,9 +110,35 @@ h1 {
 #confidence {
     margin-top: 15p
 }
+
+.back-button {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: rgba(255, 255, 255, 0.9);
+    color: #3a6186;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-weight: bold;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.back-button:hover {
+    background: white;
+    transform: translateY(-2px);
+}
     </style>
 </head>
 <body>
+    <button class="back-button" onclick="window.history.back()">
+        <i class="fas fa-arrow-left"></i> Back
+    </button>
     <div id="loading">Loading MediaPipe model...</div>
     <div id="video-container">
         <video id="input-video" width="640" height="480" autoplay playsinline></video>
