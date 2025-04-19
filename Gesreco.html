@@ -6,31 +6,31 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
         body {
-    background: linear-gradient(-45deg, #3a6186, #89253e, #5b5ea6, #434343);
-    background-size: 400% 400%;
-    animation: gradientMove 15s ease infinite;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
+            background: linear-gradient(-45deg, #3a6186, #89253e, #5b5ea6, #434343);
+            background-size: 400% 400%;
+            animation: gradientMove 15s ease infinite;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
             padding: 20px;
-    min-height: 100vh;
-    color: #333;
-}
+            min-height: 100vh;
+            color: #333;
+        }
 
-@keyframes gradientMove {
+        @keyframes gradientMove {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
 
         .main-container {
-    max-width: 800px;
+            max-width: 800px;
             width: 100%;
             margin: 0 auto;
             background-color: rgba(142, 142, 142, 0.518);
-    border-radius: 20px;
+            border-radius: 20px;
             padding: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-}
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
 
         .header {
             display: flex;
@@ -61,83 +61,73 @@
         }
 
         .page-title {
-    color: #3a3a3a;
+            color: #3a3a3a;
             margin: 0;
             font-size: 1.8rem;
             font-weight: 600;
-}
+        }
 
-#video-container {
-    position: relative;
-    width: 640px;
-    max-width: 100%;
-    height: 480px;
-    border-radius: 15px;
-    overflow: hidden;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-    margin: 0 auto;
-    border: 5px solid #fff;
+        #video-container {
+            position: relative;
+            width: 640px;
+            max-width: 100%;
+            height: 480px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            margin: 0 auto;
+            border: 5px solid #fff;
             background-color: #000;
-}
+        }
 
         #output-canvas, #input-video {
-    position: absolute;
+            position: absolute;
             width: 100% !important;
             height: 100% !important;
             object-fit: cover;
             border-radius: 10px;
             transform: scaleX(-1);
-    left: 0;
-    top: 0;
-}
+            left: 0;
+            top: 0;
+        }
 
-#gesture-output {
-    margin-top: 30px;
+        #gesture-output {
+            margin-top: 30px;
             font-size: 20px;
-    font-weight: bold;
+            font-weight: bold;
             padding: 10px 20px;
-    background: linear-gradient(145deg, #ffffff, #f0f0f0);
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    border-left: 5px solid #3a6186;
-}
-
-        #typed-text {
-            margin-top: 20px;
-            background: #fff;
-            padding: 15px;
-            width: 100%;
-            max-width: 600px;
+            background: linear-gradient(145deg, #ffffff, #f0f0f0);
             border-radius: 10px;
-            box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.1);
-    font-size: 24px;
-            min-height: 50px;
-            margin: 20px auto;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            border-left: 5px solid #3a6186;
         }
 
-        .action-buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin-top: 20px;
-        }
-
-        .action-btn {
-            padding: 10px 20px;
+        #confidence {
+            margin-top: 15px;
             font-size: 16px;
-            border: none;
-            border-radius: 8px;
-            background-color: #5b5ea6;
-    color: white;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            transition: all 0.3s ease;
+            color: #666;
         }
 
-        .action-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+        #gesture-history {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #888;
+        }
+
+        #loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            display: none;
+            background-color: rgba(0, 0, 0, 0.85);
+            color: white;
+            padding: 25px 40px;
+            border-radius: 12px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
         }
 
         @media (max-width: 768px) {
@@ -153,161 +143,11 @@
                 font-size: 18px;
                 padding: 8px 15px;
             }
-
-            #typed-text {
-                font-size: 20px;
-                padding: 10px;
-            }
-}
-
-        .gesture-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            max-width: 100%;
         }
-
-        .video-container {
-            position: relative;
-            width: 100%;
-            max-width: 640px;
-            margin: 0 auto;
-        }
-
-        .video-container video {
-            width: 100%;
-            height: auto;
-            border-radius: 8px;
-        }
-
-        .output-container {
-            width: 100%;
-            max-width: 640px;
-            margin: 20px auto;
-            padding: 15px;
-            background-color: rgba(142, 142, 142, 0.518);
-            border-radius: 8px;
-            min-height: 100px;
-        }
-
-        #gestureOutput {
-            font-size: 1.2rem;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-        }
-
-        .controls {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: center;
-            margin-top: 20px;
-            width: 100%;
-            max-width: 640px;
-        }
-
-        .btn {
-            padding: 10px 20px;
-            font-size: 1rem;
-            white-space: nowrap;
-        }
-
-        @media (max-width: 768px) {
-            .gesture-container {
-                padding: 10px;
-            }
-
-            .video-container {
-                max-width: 100%;
-            }
-
-            .output-container {
-                margin: 10px auto;
-                padding: 10px;
-                min-height: 80px;
-            }
-
-            #gestureOutput {
-                font-size: 1rem;
-            }
-
-            .controls {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .btn {
-                width: 100%;
-                margin-bottom: 5px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .gesture-container {
-                padding: 5px;
-            }
-
-            .output-container {
-                min-height: 60px;
-            }
-
-            #gestureOutput {
-                font-size: 0.9rem;
-            }
-
-            .btn {
-                padding: 8px 15px;
-                font-size: 0.9rem;
-            }
-        }
-
-        /* Landscape mode adjustments */
-        @media (max-height: 500px) and (orientation: landscape) {
-            .gesture-container {
-                flex-direction: row;
-                align-items: flex-start;
-            }
-
-            .video-container {
-                width: 50%;
-            }
-
-            .output-container {
-                width: 50%;
-                margin-left: 10px;
-            }
-
-            .controls {
-                flex-direction: row;
-                margin-top: 10px;
-            }
-        }
-
-        /* Dark mode support */
-        @media (prefers-color-scheme: dark) {
-            body {
-                background-color: #121212;
-                color: #f8f9fa;
-            }
-
-            .output-container {
-                background-color: rgba(142, 142, 142, 0.3);
-            }
-
-            .btn-primary {
-                background-color: #3a6186;
-                border-color: #3a6186;
-            }
-
-            .btn-secondary {
-                background-color: #89253e;
-                border-color: #89253e;
-            }
-}
     </style>
 </head>
 <body>
+    <div id="loading">Loading MediaPipe model...</div>
     <div class="main-container">
         <div class="header">
             <button class="back-btn" onclick="goBack()">
@@ -318,53 +158,206 @@
             <div style="width: 100px;"></div>
         </div>
 
-    <div id="video-container">
-            <video id="input-video" autoplay playsinline></video>
-            <canvas id="output-canvas"></canvas>
-    </div>
+        <div id="video-container">
+            <video id="input-video" width="640" height="480" autoplay playsinline></video>
+            <canvas id="output-canvas" width="640" height="480"></canvas>
+        </div>
         
-    <div id="gesture-output">
-            Detected Gesture: <span id="gesture">None</span>
-        <div id="confidence">Confidence: <span id="confidence-value">0%</span></div>
-        </div>
-
-        <div id="typed-text"></div>
-
-        <div class="action-buttons">
-            <button class="action-btn" onclick="clearText()">
-                <i class="fas fa-eraser"></i> Clear Text
-            </button>
-            <button class="action-btn" onclick="speakText()">
-                <i class="fas fa-volume-up"></i> Speak Text
-            </button>
+        <div id="gesture-output">
+            Detected Gesture: <span id="gesture">Initializing...</span>
+            <div id="confidence">Confidence: <span id="confidence-value">0%</span></div>
+            <div id="gesture-history">Recent Gestures: <span id="history-value"></span></div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+
     <script>
-        const videoElement = document.getElementById('input-video');
-        const canvasElement = document.getElementById('output-canvas');
-        const canvasCtx = canvasElement.getContext('2d');
-        const gestureSpan = document.getElementById('gesture');
-        const typedTextDiv = document.getElementById('typed-text');
-        const confidenceValue = document.getElementById('confidence-value');
+        class HandGestureRecognizer {
+            constructor() {
+                this.videoElement = document.getElementById('input-video');
+                this.canvasElement = document.getElementById('output-canvas');
+                this.canvasCtx = this.canvasElement.getContext('2d');
+                this.gestureOutput = document.getElementById('gesture');
+                this.confidenceOutput = document.getElementById('confidence-value');
+                this.historyOutput = document.getElementById('history-value');
+                this.loadingElement = document.getElementById('loading');
+                
+                this.gestureHistory = [];
+                this.lastGesture = null;
+                this.gestureConfidence = 0;
+                this.gestureStartTime = null;
+                
+                this.initializeMediaPipe();
+            }
 
-        let typedText = '';
-        let lastGesture = '';
-        let stableCount = 0;
-        let cooldown = false;
-        let gestureConfidence = 0;
+            async initializeMediaPipe() {
+                this.loadingElement.style.display = 'block';
+                
+                this.hands = new Hands({
+                    locateFile: (file) => {
+                        return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
+                    }
+                });
 
-        function clearText() {
-            typedText = '';
-            typedTextDiv.textContent = '';
-        }
+                this.hands.setOptions({
+                    maxNumHands: 2,
+                    modelComplexity: 1,
+                    minDetectionConfidence: 0.7,
+                    minTrackingConfidence: 0.7
+                });
 
-        function speakText() {
-            const msg = new SpeechSynthesisUtterance(typedText);
-            window.speechSynthesis.speak(msg);
+                this.hands.onResults(this.onResults.bind(this));
+
+                this.camera = new Camera(this.videoElement, {
+                    onFrame: async () => {
+                        await this.hands.send({image: this.videoElement});
+                    },
+                    width: 640,
+                    height: 480
+                });
+
+                try {
+                    await this.camera.start();
+                    this.loadingElement.style.display = 'none';
+                } catch (error) {
+                    console.error('Error starting camera:', error);
+                    this.gestureOutput.textContent = 'Error: Could not start camera';
+                }
+            }
+
+            calculateHandAngle(landmarks, point1, point2) {
+                const angle = Math.atan2(
+                    landmarks[point2].y - landmarks[point1].y,
+                    landmarks[point2].x - landmarks[point1].x
+                ) * 180 / Math.PI;
+                return angle;
+            }
+
+            getFingerSlope(landmarks, tipIdx, baseIdx) {
+                return (landmarks[tipIdx].y - landmarks[baseIdx].y) / 
+                       (landmarks[tipIdx].x - landmarks[baseIdx].x);
+            }
+
+            onResults(results) {
+                this.canvasCtx.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height);
+                this.canvasCtx.drawImage(results.image, 0, 0, this.canvasElement.width, this.canvasElement.height);
+
+                if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+                    for (const landmarks of results.multiHandLandmarks) {
+                        drawConnectors(this.canvasCtx, landmarks, HAND_CONNECTIONS,
+                            {color: '#00FF00', lineWidth: 3});
+                        drawLandmarks(this.canvasCtx, landmarks,
+                            {color: '#FF0000', lineWidth: 2, radius: 3});
+                            
+                        const gesture = this.recognizeGesture(landmarks);
+                        this.updateGestureStatus(gesture);
+                    }
+                } else {
+                    this.gestureOutput.textContent = 'No hand detected';
+                    this.confidenceOutput.textContent = '0%';
+                }
+            }
+
+            updateGestureStatus(gesture) {
+                if (gesture === this.lastGesture) {
+                    if (!this.gestureStartTime) {
+                        this.gestureStartTime = Date.now();
+                    }
+                    const gestureDuration = Date.now() - this.gestureStartTime;
+                    this.gestureConfidence = Math.min(100, (gestureDuration / 1000) * 100);
+                } else {
+                    this.gestureStartTime = Date.now();
+                    this.gestureConfidence = 0;
+                }
+
+                this.lastGesture = gesture;
+                this.gestureOutput.textContent = gesture;
+                this.confidenceOutput.textContent = `${Math.round(this.gestureConfidence)}%`;
+
+                if (this.gestureConfidence > 80) {
+                    this.updateGestureHistory(gesture);
+                }
+            }
+
+            updateGestureHistory(gesture) {
+                if (this.gestureHistory.length === 0 || 
+                    this.gestureHistory[this.gestureHistory.length - 1] !== gesture) {
+                    this.gestureHistory.push(gesture);
+                    if (this.gestureHistory.length > 5) {
+                        this.gestureHistory.shift();
+                    }
+                    this.historyOutput.textContent = this.gestureHistory.join(' → ');
+                }
+            }
+
+            recognizeGesture(landmarks) {
+                const getDistance = (point1, point2) => {
+                    const dx = point1.x - point2.x;
+                    const dy = point1.y - point2.y;
+                    return Math.sqrt(dx * dx + dy * dy);
+                };
+
+                const isFingerExtended = (tipIdx, pipIdx, mcpIdx) => {
+                    const tipToMcp = getDistance(landmarks[tipIdx], landmarks[mcpIdx]);
+                    const pipToMcp = getDistance(landmarks[pipIdx], landmarks[mcpIdx]);
+                    return tipToMcp > pipToMcp * 1.2;
+                };
+
+                const thumbAngle = this.calculateHandAngle(landmarks, 4, 2);
+                const isThumbExtended = Math.abs(thumbAngle) > 30;
+                const isIndexExtended = isFingerExtended(8, 7, 5);
+                const isMiddleExtended = isFingerExtended(12, 11, 9);
+                const isRingExtended = isFingerExtended(16, 15, 13);
+                const isPinkyExtended = isFingerExtended(20, 19, 17);
+
+                // Enhanced gesture recognition with more gestures
+                if (!isThumbExtended && !isIndexExtended && !isMiddleExtended && 
+                    !isRingExtended && !isPinkyExtended) {
+                    return 'Fist';
+                }
+                if (isThumbExtended && isIndexExtended && isMiddleExtended && 
+                    isRingExtended && isPinkyExtended) {
+                    return 'Open Hand';
+                }
+                if (!isThumbExtended && isIndexExtended && !isMiddleExtended && 
+                    !isRingExtended && !isPinkyExtended) {
+                    return 'Pointing';
+                }
+                if (!isThumbExtended && isIndexExtended && isMiddleExtended && 
+                    !isRingExtended && !isPinkyExtended) {
+                    return 'Victory';
+                }
+                if (isThumbExtended && !isIndexExtended && !isMiddleExtended && 
+                    !isRingExtended && !isPinkyExtended) {
+                    return 'Thumbs Up';
+                }
+                if (!isThumbExtended && isIndexExtended && isMiddleExtended && 
+                    isRingExtended && !isPinkyExtended) {
+                    return 'Three Fingers';
+                }
+                if (isThumbExtended && isIndexExtended && !isMiddleExtended && 
+                    !isRingExtended && isPinkyExtended) {
+                    return 'Rock On';
+                }
+                if (!isThumbExtended && !isIndexExtended && !isMiddleExtended && 
+                    !isRingExtended && isPinkyExtended) {
+                    return 'Pinky';
+                }
+                if (isThumbExtended && isPinkyExtended && !isIndexExtended && 
+                    !isMiddleExtended && !isRingExtended) {
+                    return 'Hang Loose';
+                }
+                if (!isThumbExtended && isIndexExtended && !isMiddleExtended && 
+                    !isRingExtended && isPinkyExtended) {
+                    return 'Spider-Man';
+                }
+
+                return 'Unknown Gesture';
+            }
         }
 
         function goBack() {
@@ -378,165 +371,9 @@
             }
         }
 
-        const hands = new Hands({
-            locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
-        });
-
-        hands.setOptions({
-            maxNumHands: 1,
-                    modelComplexity: 1,
-                    minDetectionConfidence: 0.7,
-                    minTrackingConfidence: 0.7
-                });
-
-        hands.onResults(onResults);
-
-        const camera = new Camera(videoElement, {
-            onFrame: async () => await hands.send({image: videoElement}),
-                    width: 640,
-            height: 480,
-            facingMode: 'user',
-            aspectRatio: 1.3333333, // 4:3 aspect ratio
-            resizeMode: 'crop-and-scale'
-        });
-
-        // Set video element dimensions explicitly
-        videoElement.width = 640;
-        videoElement.height = 480;
-        canvasElement.width = 640;
-        canvasElement.height = 480;
-
-        // Add video constraints for better quality
-        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-            navigator.mediaDevices.getUserMedia({
-                video: {
-                    width: { ideal: 640 },
-                    height: { ideal: 480 },
-                    facingMode: 'user',
-                    frameRate: { ideal: 30 }
-                }
-            }).then(function(stream) {
-                videoElement.srcObject = stream;
-            }).catch(function(error) {
-                console.error('Error accessing camera:', error);
-            });
-        }
-
-        camera.start();
-
-        function isExtended(landmarks, tip, pip, mcp) {
-            // More precise finger extension check
-            const tipY = landmarks[tip].y;
-            const pipY = landmarks[pip].y;
-            const mcpY = landmarks[mcp].y;
-            
-            // Check if the finger is extended (tip is above pip and mcp)
-            return tipY < pipY && tipY < mcpY;
-        }
-
-        function isBent(landmarks, tip, pip, mcp) {
-            // Check if finger is bent
-            const tipY = landmarks[tip].y;
-            const pipY = landmarks[pip].y;
-            const mcpY = landmarks[mcp].y;
-            
-            return tipY > pipY && tipY > mcpY;
-        }
-
-        function recognizeGesture(landmarks) {
-            // Get finger states with more precise checks
-            const isThumb = isExtended(landmarks, 4, 3, 2);
-            const isIndex = isExtended(landmarks, 8, 7, 5);
-            const isMiddle = isExtended(landmarks, 12, 11, 9);
-            const isRing = isExtended(landmarks, 16, 15, 13);
-            const isPinky = isExtended(landmarks, 20, 19, 17);
-
-            // Check for action gestures first
-            if (isThumb && isPinky && !isIndex && !isMiddle && !isRing) {
-                return 'Clear';
-            }
-            if (isThumb && isMiddle && isRing && !isIndex && !isPinky) {
-                return 'Open';
-            }
-
-            // ASL letters with more specific checks
-            if (isThumb && !isIndex && !isMiddle && !isRing && !isPinky) return 'A';
-            if (!isThumb && isIndex && isMiddle && isRing && isPinky) return 'B';
-            if (isThumb && isIndex && !isMiddle && isRing && !isPinky) return 'C';
-            if (!isThumb && isIndex && !isMiddle && !isRing && !isPinky) return 'D';
-            if (!isThumb && !isIndex && !isMiddle && !isRing && !isPinky) return 'E';
-            if (isThumb && !isIndex && isMiddle && !isRing && isPinky) return 'F';
-            if (isThumb && isIndex && isMiddle && !isRing && isPinky) return 'G';
-            if (isIndex && isMiddle && !isRing && !isPinky && !isThumb) return 'H';
-            if (isThumb && !isIndex && isMiddle && !isRing && !isPinky) return 'I';
-            if (isPinky && !isThumb && !isIndex && !isMiddle && !isRing) return 'J';
-            if (!isThumb && isIndex && !isMiddle && isRing && !isPinky) return 'K';
-            if (isThumb && isIndex && !isMiddle && !isRing && !isPinky) return 'L';
-            if (isThumb && !isIndex && !isMiddle && isRing && !isPinky) return 'M';
-            if (isThumb && isIndex && !isMiddle && !isRing && !isPinky) return 'N';
-            if (isThumb && !isIndex && isMiddle && isRing && !isPinky) return 'O';
-            if (isThumb && isIndex && !isMiddle && !isRing && isPinky) return 'P';
-            if (isThumb && isMiddle && !isIndex && !isRing && !isPinky) return 'Q';
-            if (isThumb && isIndex && isMiddle && !isRing && !isPinky) return 'R';
-            if (isThumb && !isIndex && !isMiddle && !isRing && !isPinky) return 'S';
-            if (isThumb && isIndex && !isMiddle && !isRing && !isPinky) return 'T';
-            if (isMiddle && isIndex && !isRing && !isPinky && !isThumb) return 'U';
-            if (isIndex && isMiddle && !isRing && !isPinky && !isThumb) return 'V';
-            if (isThumb && isIndex && isMiddle && !isRing && !isPinky) return 'W';
-            if (isIndex && !isMiddle && !isRing && !isPinky && !isThumb) return 'X';
-            if (isIndex && !isMiddle && !isRing && isPinky && !isThumb) return 'Y';
-            if (isThumb && isIndex && isMiddle && isRing && !isPinky) return 'Z';
-
-            return 'Unknown';
-        }
-
-        function onResults(results) {
-            canvasCtx.save();
-            canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-            canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
-
-                if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
-                const landmarks = results.multiHandLandmarks[0];
-                drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS, {color: '#00FF00', lineWidth: 2});
-                drawLandmarks(canvasCtx, landmarks, {color: '#FF0000', lineWidth: 1});
-
-                const gesture = recognizeGesture(landmarks);
-                gestureSpan.textContent = gesture;
-
-                if (!cooldown && gesture === lastGesture) {
-                    stableCount++;
-                    gestureConfidence = Math.min(100, (stableCount / 8) * 100); // Increased stability threshold
-                    confidenceValue.textContent = `${Math.round(gestureConfidence)}%`;
-
-                    if (stableCount >= 8) { // Increased stability requirement
-                        handleGesture(gesture);
-                        cooldown = true;
-                        setTimeout(() => cooldown = false, 1500);
-                        stableCount = 0;
-                    }
-                } else {
-                    stableCount = 0;
-                    gestureConfidence = 0;
-                    confidenceValue.textContent = '0%';
-                }
-                lastGesture = gesture;
-                } else {
-                gestureSpan.textContent = 'No hand detected';
-                confidenceValue.textContent = '0%';
-            }
-            canvasCtx.restore();
-        }
-
-        function handleGesture(gesture) {
-            if (gesture === 'Open') {
-                typedText += ' ';
-            } else if (gesture === 'Clear') {
-                clearText();
-            } else if (gesture.length === 1 && /[A-Z]/.test(gesture)) {
-                typedText += gesture;
-            }
-            typedTextDiv.textContent = typedText;
-        }
+        window.onload = () => {
+            new HandGestureRecognizer();
+        };
     </script>
 </body>
 </html>
