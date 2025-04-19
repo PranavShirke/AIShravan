@@ -3,286 +3,219 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Tutorials</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Video Upload & Display - AI Shravan</title>
+    
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-<div class="container mt-5">
-    <button class="back-button" onclick="window.history.back()">
-        <i class="fas fa-arrow-left"></i> Back
-    </button>
-    <h2 class="mb-4">Video Tutorials</h2>
-    <div class="row">
-        <div class="col-md-8 mx-auto">
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h5 class="card-title">Upload New Tutorial</h5>
-                    <form id="upload-form" class="mb-3">
-                        <div class="mb-3">
-                            <label for="video-title" class="form-label">Title</label>
-                            <input type="text" class="form-control" id="video-title" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="video-file" class="form-label">Video File</label>
-                            <input type="file" class="form-control" id="video-file" accept="video/*" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Upload</button>
-                    </form>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Available Tutorials</h5>
-                    <div id="video-list" class="list-group">
-                        <!-- Sample tutorials -->
-                        <div class="list-group-item">
-                            <h5 class="mb-1">Sample Video</h5>
-                            <video class="w-100 mt-2" controls>
-                                <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
-                                Your browser does not support the video tag.
-                            </video>
-                        </div>
-                        
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <!-- Cloudinary Widget -->
+    <script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 
 <style>
-    /* Base styles and CSS reset */
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
+    @keyframes gradient {
+        0% {
+            background-position: 0% 50%;
+        }
+        50% {
+            background-position: 100% 50%;
+        }
+        100% {
+            background-position: 0% 50%;
+        }
     }
-    
+
     body {
-        background: linear-gradient(135deg, #f6f8fb 0%, #e9edf2 100%);
-        color: #333;
-        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+        background-size: 400% 400%;
+        animation: gradient 15s ease infinite;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        padding-top: 60px;
         min-height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: flex-start;
-        padding: 2rem 1rem;
+        margin: 0;
     }
-    
-    .container {
-        width: 100%;
-        max-width: 900px;
+
+    .main-container {
+        max-width: 1200px;
         margin: 0 auto;
-    }
-    
-    /* Main title styling */
-    h2 {
-        text-align: center;
-        color: #1a365d;
-        font-weight: 700;
-        font-size: 2.5rem;
-        margin-bottom: 2rem;
-        position: relative;
-        padding-bottom: 1rem;
-    }
-    
-    h2::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 100px;
-        height: 4px;
-        background: linear-gradient(90deg, #3498db, #2980b9);
-        border-radius: 2px;
-    }
-    
-    /* Card styling */
-    .card {
-        background: rgba(255, 255, 255, 0.95);
-        border: none;
-        border-radius: 16px;
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         backdrop-filter: blur(10px);
-        margin-bottom: 2rem;
-        overflow: hidden;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
-    
-    .card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+
+    /* Upload Section Styles */
+    .upload-section {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        padding: 30px;
+        margin-bottom: 30px;
     }
-    
-    .card-body {
-        padding: 2rem;
+
+    .upload-form {
+        margin-top: 20px;
     }
-    
-    .card-title {
-        color: #2c5282;
-        font-size: 1.5rem;
-        font-weight: 600;
-        text-align: center;
-        margin-bottom: 1.5rem;
-    }
-    
-    /* Form styling */
-    .form-label {
-        font-weight: 500;
-        color: #4a5568;
-        font-size: 1rem;
-    }
-    
+
     .form-control {
-        border: 2px solid #e2e8f0;
-        border-radius: 12px;
-        padding: 1rem;
-        font-size: 1rem;
-        transition: all 0.2s ease;
-        background: #ffffff;
+        margin-bottom: 15px;
+        padding: 12px;
     }
-    
-    .form-control:focus {
-        border-color: #3498db;
-        box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.15);
-        outline: none;
-    }
-    
-    /* File input styling */
-    input[type="file"] {
-        background: #f8fafc;
-        padding: 0.75rem;
-        cursor: pointer;
-    }
-    
-    input[type="file"]::-webkit-file-upload-button {
-        background: #3498db;
+
+    .btn-upload {
+        background: #2196f3;
         color: white;
-        padding: 0.5rem 1rem;
         border: none;
+        padding: 12px 20px;
         border-radius: 8px;
-        margin-right: 1rem;
         cursor: pointer;
-        transition: background 0.2s ease;
-    }
-    
-    input[type="file"]::-webkit-file-upload-button:hover {
-        background: #2980b9;
-    }
-    
-    /* Button styling */
-    .btn-primary {
-        background: linear-gradient(45deg, #3498db, #2980b9);
-        border: none;
-        border-radius: 12px;
-        padding: 1rem 2rem;
-        font-weight: 600;
-        font-size: 1rem;
-        color: white;
-        width: 100%;
         transition: all 0.3s ease;
-        text-transform: uppercase;
-        letter-spacing: 1px;
+        width: 100%;
     }
-    
-    .btn-primary:hover {
-        background: linear-gradient(45deg, #2980b9, #2573a7);
+
+    .btn-upload:hover {
+        background: #1976d2;
         transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(52, 152, 219, 0.25);
     }
-    
-    /* Video list styling */
-    .list-group-item {
-        border: none;
-        border-radius: 12px;
-        margin-bottom: 1.5rem;
-        padding: 1.5rem;
-        background: #ffffff;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+
+    .upload-status {
+        margin-top: 20px;
+        padding: 15px;
+        border-radius: 8px;
+        text-align: center;
+    }
+
+    .upload-status.success {
+        background: #e8f5e9;
+        color: #2e7d32;
+    }
+
+    .upload-status.error {
+        background: #ffebee;
+        color: #c62828;
+    }
+
+    .upload-status.loading {
+        background: #e3f2fd;
+        color: #1565c0;
+    }
+
+    .file-input-container {
+        position: relative;
+        margin-bottom: 20px;
+    }
+
+    .file-input-label {
+        display: block;
+        padding: 15px;
+        background: #f8f9fa;
+        border: 2px dashed #dee2e6;
+        border-radius: 8px;
+        text-align: center;
+        cursor: pointer;
         transition: all 0.3s ease;
     }
-    
-    .list-group-item:last-child {
-        margin-bottom: 0;
+
+    .file-input-label:hover {
+        background: #e9ecef;
+        border-color: #adb5bd;
     }
-    
-    .list-group-item h5 {
-        color: #2c5282;
-        font-weight: 600;
-        font-size: 1.25rem;
-        text-align: center;
-        margin-bottom: 1rem;
+
+    .file-input {
+        display: none;
     }
-    
-    /* Video player styling */
-    video {
+
+    .selected-file {
+        margin-top: 10px;
+        font-size: 0.9rem;
+        color: #6c757d;
+    }
+
+    /* Videos Section Styles */
+    .videos-section {
+        margin-top: 30px;
+    }
+
+    .video-card {
+        background: white;
         border-radius: 12px;
-        width: 100%;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+        overflow: hidden;
+        transition: transform 0.3s ease;
+    }
+
+    .video-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .video-thumbnail {
+        position: relative;
+        padding-top: 56.25%; /* 16:9 Aspect Ratio */
         background: #000;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-        margin-top: 1rem;
     }
-    
-    /* Upload animation */
-    @keyframes uploadProgress {
-        0% { width: 0; }
-        100% { width: 100%; }
+
+    .video-thumbnail iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
     }
-    
-    .upload-progress {
-        height: 4px;
-        background: linear-gradient(90deg, #3498db, #2ecc71);
-        border-radius: 2px;
-        width: 0;
-        animation: uploadProgress 2s ease-in-out;
+
+    .video-info {
+        padding: 20px;
     }
-    
-    /* Success message */
-    .upload-success {
+
+    .video-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: #333;
+    }
+
+    .video-meta {
+        display: flex;
+        justify-content: space-between;
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+
+    .back-button {
         position: fixed;
         top: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: #2ecc71;
-        color: white;
-        padding: 1rem 2rem;
-        border-radius: 12px;
-        font-weight: 500;
-        box-shadow: 0 4px 15px rgba(46, 204, 113, 0.2);
+        left: 20px;
+        background: rgba(255, 255, 255, 0.9);
+        border: none;
+        padding: 10px 20px;
+        border-radius: 25px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         z-index: 1000;
     }
-    
-    /* Responsive design */
-    @media (max-width: 768px) {
-        body {
-            padding: 1rem;
-        }
-    
-        .card-body {
-            padding: 1.5rem;
-        }
-    
-        h2 {
-            font-size: 2rem;
-        }
-    
-        .btn-primary {
-            padding: 0.75rem 1.5rem;
-        }
+
+    .back-button:hover {
+        background: white;
+        transform: translateY(-2px);
     }
-    
-    /* Loading spinner */
-    .spinner {
+
+    .loading-spinner {
         width: 40px;
         height: 40px;
         border: 4px solid #f3f3f3;
-        border-top: 4px solid #3498db;
+        border-top: 4px solid #2196f3;
         border-radius: 50%;
         animation: spin 1s linear infinite;
-        margin: 20px auto;
+        margin: 50px auto;
     }
     
     @keyframes spin {
@@ -290,99 +223,363 @@
         100% { transform: rotate(360deg); }
     }
     
-    /* Empty state */
-    .empty-state {
+    .no-videos {
         text-align: center;
-        padding: 3rem;
-        color: #718096;
+        padding: 50px;
+        color: #6c757d;
+        font-style: italic;
     }
-    
-    .empty-state i {
-        font-size: 3rem;
-        margin-bottom: 1rem;
-        color: #a0aec0;
+
+    .section-title {
+        text-align: center;
+        margin-bottom: 30px;
+        color: #333;
     }
-    
-    /* Form group spacing */
-    .mb-3 {
-        margin-bottom: 1.5rem;
-    }
-    
-    /* Add some depth to the page */
-    .container {
-        perspective: 1000px;
-    }
-    
-    .card {
-        transform-style: preserve-3d;
-        backface-visibility: hidden;
-    }
-    
-    /* Smooth gradient animation */
-    .back-button {
-        position: fixed;
-        top: 20px;
-        left: 20px;
-        background: rgba(44, 82, 130, 0.9);
+
+    .btn-cancel {
+        background: #dc3545;
         color: white;
         border: none;
-        padding: 12px 24px;
-        border-radius: 25px;
+        padding: 12px 20px;
+        border-radius: 8px;
         cursor: pointer;
-        transition: 0.3s;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-weight: 600;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        z-index: 1000;
+        transition: all 0.3s ease;
+        width: 100%;
+        margin-top: 10px;
     }
 
-    .back-button:hover {
-        background: rgba(44, 82, 130, 1);
+    .btn-cancel:hover {
+        background: #c82333;
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .upload-progress {
+        margin-top: 15px;
+        height: 4px;
+        background: #e9ecef;
+        border-radius: 2px;
+        overflow: hidden;
+    }
+
+    .upload-progress-bar {
+        height: 100%;
+        background: #2196f3;
+        width: 0%;
+        transition: width 0.3s ease;
+    }
+
+    #upload-speed {
+        text-align: center;
+        margin-top: 5px;
     }
 </style>
+</head>
+<body>
+    <button class="back-button" onclick="window.history.back()">
+        <i class="fas fa-arrow-left"></i> Back
+    </button>
+
+    <div class="main-container">
+        <!-- Upload Section -->
+        <div class="upload-section">
+            <h2 class="section-title">Upload Video</h2>
+            
+            <form id="upload-form" class="upload-form">
+                <div class="mb-3">
+                    <input type="text" class="form-control" id="video-title" placeholder="Enter video title" required>
+                </div>
+                
+                <div class="file-input-container">
+                    <label for="video-file" class="file-input-label">
+                        <i class="fas fa-cloud-upload-alt fa-2x mb-2"></i>
+                        <div>Choose a video file or drag it here</div>
+                        <div class="text-muted small mt-2">Supported formats: MP4, WebM, MOV</div>
+                    </label>
+                    <input type="file" id="video-file" class="file-input" accept="video/*" required>
+                    <div id="selected-file" class="selected-file"></div>
+                </div>
+
+                <button type="submit" class="btn-upload">
+                    <i class="fas fa-upload me-2"></i>Upload Video
+                </button>
+                <button type="button" id="cancel-upload" class="btn-cancel" style="display: none;">
+                    <i class="fas fa-times me-2"></i>Cancel Upload
+                </button>
+
+                <div class="upload-progress" style="display: none;">
+                    <div class="upload-progress-bar"></div>
+                </div>
+                <div id="upload-speed" class="text-muted small mt-2" style="display: none;"></div>
+            </form>
+
+            <div id="upload-status" class="upload-status"></div>
+        </div>
+
+        <!-- Videos Section -->
+        <div class="videos-section">
+            <h2 class="section-title">Your Videos</h2>
+            <div id="videos-grid" class="row">
+                <div class="col-12 text-center">
+                    <div class="loading-spinner"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 <script>
-document.getElementById('upload-form').addEventListener('submit', function(e) {
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAQ_y_einsNojJNTvSth1burw5Ud71hnwY",
+            authDomain: "ai-shravan.firebaseapp.com",
+            projectId: "ai-shravan",
+            storageBucket: "ai-shravan.appspot.com",
+            messagingSenderId: "947415877720",
+            appId: "1:947415877720:web:374a581af9d8e4ce26a22d",
+            measurementId: "G-V1KVN7MM5N"
+        };
+
+        // Cloudinary Configuration
+        const cloudinaryConfig = {
+            cloudName: 'dcmlvb71m',
+            uploadPreset: 'video_upload',
+            apiKey: '946162811461862',
+            apiSecret: 'FHeboSoswlEMySpA6nq1j3hSTus'
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Helper function to generate signature
+        function generateSignature(paramsToSign) {
+            const signature = CryptoJS.SHA1(
+                Object.entries(paramsToSign)
+                    .sort()
+                    .map(([key, value]) => `${key}=${value}`)
+                    .join('&') + cloudinaryConfig.apiSecret
+            ).toString();
+            return signature;
+        }
+
+        // Handle file selection
+        document.getElementById('video-file').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                document.getElementById('selected-file').textContent = `Selected: ${file.name} (${formatFileSize(file.size)})`;
+            }
+        });
+
+        let currentUploadController = null;
+        let uploadStartTime = null;
+
+        // Handle form submission
+        document.getElementById('upload-form').addEventListener('submit', async function(e) {
     e.preventDefault();
     
+            const file = document.getElementById('video-file').files[0];
     const title = document.getElementById('video-title').value;
-    const file = document.getElementById('video-file').files[0];
-    
-    if (file) {
-        // Create new video element
-        const videoItem = document.createElement('div');
-        videoItem.className = 'list-group-item';
-        
-        const titleElement = document.createElement('h5');
-        titleElement.className = 'mb-1';
-        titleElement.textContent = title;
-        
-        const video = document.createElement('video');
-        video.className = 'w-100 mt-2';
-        video.controls = true;
-        
-        const source = document.createElement('source');
-        source.src = URL.createObjectURL(file);
-        source.type = file.type;
-        
-        video.appendChild(source);
-        videoItem.appendChild(titleElement);
-        videoItem.appendChild(video);
-        
-        // Add to the beginning of the list
-        const videoList = document.getElementById('video-list');
-        videoList.insertBefore(videoItem, videoList.firstChild);
-        
-        // Reset form
-        e.target.reset();
-    }
-});
-</script>
+            const statusDiv = document.getElementById('upload-status');
+            const uploadButton = document.querySelector('.btn-upload');
+            const cancelButton = document.getElementById('cancel-upload');
+            const progressBar = document.querySelector('.upload-progress');
+            const progressBarInner = document.querySelector('.upload-progress-bar');
+            const uploadSpeed = document.getElementById('upload-speed');
 
+            if (!file) {
+                updateStatus("❌ Please select a video file.", "error");
+                return;
+            }
+
+            if (!title.trim()) {
+                updateStatus("❌ Please enter a video title.", "error");
+                return;
+            }
+
+            try {
+                updateStatus("⏳ Preparing upload...", "loading");
+                uploadButton.disabled = true;
+                cancelButton.style.display = 'block';
+                progressBar.style.display = 'block';
+                uploadSpeed.style.display = 'block';
+                uploadStartTime = Date.now();
+
+                // Create form data for Cloudinary upload
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('upload_preset', cloudinaryConfig.uploadPreset);
+                formData.append('api_key', cloudinaryConfig.apiKey);
+                formData.append('timestamp', Math.floor(Date.now() / 1000));
+
+                // Generate signature
+                const paramsToSign = {
+                    timestamp: formData.get('timestamp'),
+                    upload_preset: cloudinaryConfig.uploadPreset
+                };
+                const signature = generateSignature(paramsToSign);
+                formData.append('signature', signature);
+
+                // Create AbortController for cancel functionality
+                currentUploadController = new AbortController();
+
+                // Upload to Cloudinary with progress tracking
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', `https://api.cloudinary.com/v1_1/${cloudinaryConfig.cloudName}/video/upload`, true);
+                
+                xhr.upload.onprogress = function(e) {
+                    if (e.lengthComputable) {
+                        const percentComplete = (e.loaded / e.total) * 100;
+                        progressBarInner.style.width = percentComplete + '%';
+                        
+                        // Calculate upload speed
+                        const elapsedTime = (Date.now() - uploadStartTime) / 1000; // in seconds
+                        const speed = e.loaded / elapsedTime; // bytes per second
+                        const speedMBps = (speed / (1024 * 1024)).toFixed(2);
+                        uploadSpeed.textContent = `Upload speed: ${speedMBps} MB/s`;
+                    }
+                };
+
+                xhr.onload = async function() {
+                    if (xhr.status === 200) {
+                        const uploadData = JSON.parse(xhr.responseText);
+                        const videoUrl = uploadData.secure_url;
+                        const thumbnailUrl = uploadData.secure_url.replace('.mp4', '.jpg');
+
+                        // Save video info to Firestore
+                        await db.collection('videos').add({
+                            title,
+                            videoUrl,
+                            thumbnailUrl,
+                            fileName: file.name,
+                            mimeType: file.type,
+                            size: file.size,
+                            uploadedAt: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+
+                        updateStatus("✅ Video uploaded and saved successfully!", "success");
+                        document.getElementById('upload-form').reset();
+                        document.getElementById('selected-file').textContent = '';
+                        uploadButton.disabled = false;
+                        cancelButton.style.display = 'none';
+                        progressBar.style.display = 'none';
+                        uploadSpeed.style.display = 'none';
+                        currentUploadController = null;
+
+                        // Reload videos after successful upload
+                        loadVideos();
+                    } else {
+                        throw new Error('Upload failed');
+                    }
+                };
+
+                xhr.onerror = function() {
+                    throw new Error('Network error during upload');
+                };
+
+                xhr.send(formData);
+
+            } catch (err) {
+                if (err.name === 'AbortError') {
+                    updateStatus("❌ Upload cancelled", "error");
+                } else {
+                    console.error("Upload error:", err);
+                    updateStatus("❌ Error uploading video: " + err.message, "error");
+                }
+                uploadButton.disabled = false;
+                cancelButton.style.display = 'none';
+                progressBar.style.display = 'none';
+                uploadSpeed.style.display = 'none';
+                currentUploadController = null;
+            }
+        });
+
+        // Handle cancel button click
+        document.getElementById('cancel-upload').addEventListener('click', function() {
+            if (currentUploadController) {
+                currentUploadController.abort();
+            }
+        });
+
+        // Load videos from Firestore
+        function loadVideos() {
+            const videosGrid = document.getElementById('videos-grid');
+            
+            db.collection('videos')
+                .orderBy('uploadedAt', 'desc')
+                .get()
+                .then(snapshot => {
+                    videosGrid.innerHTML = '';
+                    
+                    if (snapshot.empty) {
+                        videosGrid.innerHTML = '<div class="col-12"><div class="no-videos">No videos available. Upload your first video!</div></div>';
+                        return;
+                    }
+
+                    snapshot.forEach(doc => {
+                        const video = doc.data();
+                        const videoCard = createVideoCard(video);
+                        videosGrid.appendChild(videoCard);
+                    });
+                })
+                .catch(error => {
+                    console.error("Error loading videos:", error);
+                    videosGrid.innerHTML = '<div class="col-12"><div class="text-danger text-center">Error loading videos. Please try again later.</div></div>';
+                });
+        }
+
+        function createVideoCard(video) {
+            const col = document.createElement('div');
+            col.className = 'col-md-6 col-lg-4 mb-4';
+            
+            const card = document.createElement('div');
+            card.className = 'video-card';
+            
+            card.innerHTML = `
+                <div class="video-thumbnail">
+                    <img src="${video.thumbnailUrl}" alt="${video.title}" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <div class="video-info">
+                    <div class="video-title">${video.title}</div>
+                    <div class="video-meta">
+                        <span>${formatFileSize(video.size)}</span>
+                        <span>${formatDate(video.uploadedAt)}</span>
+                    </div>
+                    <div class="mt-2">
+                        <a href="${video.videoUrl}" target="_blank" class="btn btn-sm btn-primary">
+                            <i class="fas fa-play me-1"></i> Play Video
+                        </a>
+                    </div>
+                </div>
+            `;
+            
+            col.appendChild(card);
+            return col;
+        }
+
+        // Helper functions
+        function updateStatus(message, type) {
+            const statusDiv = document.getElementById('upload-status');
+            statusDiv.textContent = message;
+            statusDiv.className = `upload-status ${type}`;
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function formatDate(timestamp) {
+            if (!timestamp) return 'Unknown date';
+            const date = timestamp.toDate();
+            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+        }
+
+        // Initialize on page load
+        window.onload = function() {
+            loadVideos();
+        }
+</script>
 </body>
 </html>

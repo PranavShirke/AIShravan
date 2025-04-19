@@ -3,282 +3,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Language Guide</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <title>Sign Language Gestures - AI Shravan</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
     <style>
      body {
-  background-color: #ffffff;
-  color: #2d3748;
-  font-family: 'Inter', 'Segoe UI', sans-serif;
-  line-height: 1.5;
-  margin: 0;
-  padding: 0;
-}
+            background: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding-top: 60px;
+        }
 
-/* Custom Variables */
-:root {
-  --primary: #3182ce;
-  --primary-dark: #2c5282;
-  --primary-light: #63b3ed;
-  --bg-light: #ffffff;
-  --bg-blue-light: #ebf8ff;
-  --bg-card: #f7fafc;
-  --text-dark: #2d3748;
-  --text-medium: #4a5568;
-  --text-muted: #718096;
-  --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  --glow-effect: 0 0 15px rgba(49, 130, 206, 0.3);
-  --transition-normal: all 0.3s ease;
-}
-
-/* Navbar Styling */
-.navbar {
-  background: linear-gradient(90deg, #3182ce, #4299e1);
-  padding: 0.75rem 1rem;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  transition: var(--transition-normal);
-  box-shadow: 0 2px 10px rgba(49, 130, 206, 0.2);
-}
-
-.navbar-brand {
-  font-weight: 700;
-  font-size: 1.5rem;
-  color: white;
-  letter-spacing: -0.5px;
-  transition: var(--transition-normal);
-}
-
-.navbar-brand:hover {
-  color: #f0f9ff;
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-}
-
-.navbar-nav .nav-link {
-  color: white;
-  font-weight: 500;
-  margin: 0 0.75rem;
-  padding: 0.5rem 0;
-  position: relative;
-  transition: var(--transition-normal);
-}
-
-.navbar-nav .nav-link::after {
-  content: '';
-  position: absolute;
-  width: 0;
-  height: 2px;
-  bottom: 0;
-  left: 0;
-  background-color: white;
-  transition: var(--transition-normal);
-}
-
-.navbar-nav .nav-link:hover {
-  color: #f0f9ff;
-}
-
-.navbar-nav .nav-link:hover::after {
-  width: 100%;
-}
-
-/* Custom Button */
-.btn-outline-cyan {
-  color: white;
-  border: 1px solid white;
-  padding: 0.5rem 1.25rem;
-  font-weight: 500;
-  border-radius: 6px;
-  transition: var(--transition-normal);
-  background-color: transparent;
-  letter-spacing: 0.5px;
-}
-
-.btn-outline-cyan:hover {
-  background-color: white;
-  color: var(--primary-dark);
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-  transform: translateY(-1px);
-}
-
-/* Page Title */
-h1 {
-  color:#2d3748;
-  margin: 2rem 0;
-  font-weight: 700;
-  font-size: 2.5rem;
-  letter-spacing: -0.5px;
-  text-align: center;
-}
-
-/* Card Grid System */
-.container-fluid {
-  padding-left: 2rem;
-  padding-right: 2rem;
-  max-width: 1400px;
+        .main-container {
+            max-width: 1200px;
   margin: 0 auto;
+            padding: 20px;
 }
 
-.card {
-  background: var(--bg-card);
+        .gesture-card {
+            background: white;
   border-radius: 12px;
-  border: 1px solid #e2e8f0;
-  padding: 1.5rem;
-  box-shadow: var(--card-shadow);
-  transition: var(--transition-normal);
-  height: 100%;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
   overflow: hidden;
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            padding: 20px;
 }
 
-.card:hover {
+        .gesture-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 15px 30px rgba(49, 130, 206, 0.15);
-  border-color: var(--primary-light);
-}
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
 
-.card img {
+        .gesture-image-container {
+            flex: 0 0 40%;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .gesture-image {
   max-width: 100%;
   height: auto;
+            object-fit: contain;
   border-radius: 8px;
-  object-fit: cover;
-  transition: var(--transition-normal);
-  border: 1px solid #e2e8f0;
 }
 
-.card:hover img {
-  transform: scale(1.05);
+        .gesture-info {
+            flex: 0 0 60%;
+            padding: 20px;
 }
 
-.card-title {
-  margin-top: 1rem;
-  font-size: 1.25rem;
+        .gesture-title {
+            font-size: 1.8rem;
   font-weight: 600;
-  color: var(--primary);
-}
+            margin-bottom: 20px;
+            color: #333;
+        }
 
-/* Footer Styling */
-.footer {
-  background: linear-gradient(90deg, #2c5282, #3182ce);
-  color: white;
-  padding: 2rem 0 1.5rem;
-  margin-top: 4rem;
-  box-shadow: 0 -2px 10px rgba(49, 130, 206, 0.15);
-}
+        .gesture-instructions {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
 
-.footer .nav-link {
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 0.9rem;
-  font-weight: 500;
-  transition: var(--transition-normal);
-  padding: 0.5rem 1rem;
-}
+        .gesture-steps {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
 
-.footer .nav-link:hover {
-  color: white;
-  text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
-}
+        .gesture-steps li {
+            margin-bottom: 15px;
+            padding-left: 25px;
+            position: relative;
+            line-height: 1.5;
+            font-size: 1.1rem;
+        }
 
-.footer p {
-  margin-top: 1rem;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 0.9rem;
-}
+        .gesture-steps li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #2196f3;
+            font-weight: bold;
+        }
 
-/* Add blue section background */
-.row {
-  padding: 2rem 0;
-  background: linear-gradient(135deg, var(--bg-light) 0%, var(--bg-blue-light) 100%);
-  border-radius: 16px;
-  margin: 0 auto;
-}
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            z-index: 1000;
+            font-weight: 500;
+        }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .container-fluid {
-    padding-left: 1rem;
-    padding-right: 1rem;
+        .back-button:hover {
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+            font-weight: 600;
+            font-size: 2.5rem;
+        }
+
+        .usage-text {
+            background: #e3f2fd;
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            color: #1565c0;
+            display: inline-block;
+            margin-top: 15px;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .gesture-card {
+                flex-direction: column;
+            }
+
+            .gesture-image-container {
+                flex: 0 0 100%;
+                padding: 15px;
+            }
+
+            .gesture-info {
+                flex: 0 0 100%;
+                padding: 15px;
+            }
+
+            .gesture-title {
+                font-size: 1.5rem;
+                text-align: center;
+            }
+
+            .gesture-steps li {
+                font-size: 1rem;
   }
-  
-  .navbar-brand {
-    font-size: 1.25rem;
-  }
-  
-  h1 {
-    font-size: 2rem;
-  }
-  
-  .card {
-    padding: 1rem;
-  }
-  
-  .row {
-    border-radius: 0;
-  }
-}
-
-/* Animation For Cards */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.col {
-  animation: fadeIn 0.5s ease forwards;
-  opacity: 0;
-}
-
-.col:nth-child(1) { animation-delay: 0.1s; }
-.col:nth-child(2) { animation-delay: 0.2s; }
-.col:nth-child(3) { animation-delay: 0.3s; }
-.col:nth-child(4) { animation-delay: 0.4s; }
-.col:nth-child(5) { animation-delay: 0.5s; }
-.col:nth-child(6) { animation-delay: 0.6s; }
-.col:nth-child(7) { animation-delay: 0.7s; }
-.col:nth-child(8) { animation-delay: 0.8s; }
-.col:nth-child(9) { animation-delay: 0.9s; }
-
-/* Accessibility */
-@media (prefers-reduced-motion: reduce) {
-  * {
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
-  }
-  
-  .col {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.back-button {
-  position: fixed;
-  top: 80px;
-  left: 20px;
-  background: rgba(44, 82, 130, 0.95);
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 25px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: 600;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  z-index: 1001;
-}
-
-.back-button:hover {
-  background: rgba(44, 82, 130, 1);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-}
-
-.back-button i {
-  font-size: 16px;
 }
     </style>
 </head>
@@ -286,94 +169,169 @@ h1 {
     <button class="back-button" onclick="window.history.back()">
         <i class="fas fa-arrow-left"></i> Back
     </button>
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">AI Shravan</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item"><a class="nav-link" href="./index.html">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="./About.html">About</a></li>
-                    <li class="nav-item"><a class="nav-link" href="./index.html">Offerings</a></li>
-                    <li class="nav-item"><a class="nav-link" href="./About.html">Contact</a></li>
+
+    <div class="main-container">
+        <h2 class="section-title">Sign Language Gestures</h2>
+        
+        <!-- Hello Gesture -->
+        <div class="gesture-card">
+            <div class="gesture-image-container">
+                <img src="./hello.png" alt="Hello" class="gesture-image">
+            </div>
+            <div class="gesture-info">
+                <div class="gesture-title">Hello</div>
+                <div class="gesture-instructions">
+                    <h5>How to Sign:</h5>
+                    <ul class="gesture-steps">
+                        <li>Start with your hand near your forehead</li>
+                        <li>Extend your fingers and thumb</li>
+                        <li>Move your hand outward in a small wave</li>
+                        <li>Keep your palm facing forward</li>
                 </ul>
+                </div>
+                <div class="usage-text">Usage: Greeting someone</div>
             </div>
         </div>
-    </nav>
-    <h1 style="color: rgb(76, 64, 245); margin-top: 15px;">Hand Gestures</h1>
-    <div class="container-fluid">
-        <div class="row row-cols-1 row-cols-md-3 g-4">
-            <div class="col text-center">
-                <div class="card">
-                    <img src="./goodbye.png" alt="Goodbye" class="img-fluid">
-                    <h3 class="card-title">Goodbye</h3>
-                </div>
+
+        <!-- Goodbye Gesture -->
+        <div class="gesture-card">
+            <div class="gesture-image-container">
+                <img src="./goodbye.png" alt="Goodbye" class="gesture-image">
             </div>
-            <div class="col text-center">
-                <div class="card">
-                    <img src="./yes.png" alt="Yes" class="img-fluid">
-                    <h3 class="card-title">Yes</h3>
+            <div class="gesture-info">
+                <div class="gesture-title">Goodbye</div>
+                <div class="gesture-instructions">
+                    <h5>How to Sign:</h5>
+                    <ul class="gesture-steps">
+                        <li>Start with your hand near your face</li>
+                        <li>Extend your fingers and thumb</li>
+                        <li>Move your hand outward in a waving motion</li>
+                        <li>Keep your palm facing the person</li>
+                    </ul>
                 </div>
+                <div class="usage-text">Usage: Saying farewell</div>
             </div>
-            <div class="col text-center">
-                <div class="card">
-                    <img src="./family.png" alt="Family" class="img-fluid">
-                    <h3 class="card-title">Family</h3>
-                </div>
+        </div>
+
+        <!-- Yes Gesture -->
+        <div class="gesture-card">
+            <div class="gesture-image-container">
+                <img src="./yes.png" alt="Yes" class="gesture-image">
             </div>
-            <div class="col text-center">
-                <div class="card">
-                    <img src="./love.png" alt="I Love You" class="img-fluid">
-                    <h3 class="card-title">I Love You</h3>
+            <div class="gesture-info">
+                <div class="gesture-title">Yes</div>
+                <div class="gesture-instructions">
+                    <h5>How to Sign:</h5>
+                    <ul class="gesture-steps">
+                        <li>Make a fist with your hand</li>
+                        <li>Move your hand up and down</li>
+                        <li>Like nodding your head</li>
+                        <li>Keep your palm facing inward</li>
+                    </ul>
                 </div>
+                <div class="usage-text">Usage: Affirming something</div>
             </div>
-            <div class="col text-center">
-                <div class="card">
-                    <img src="./no.png" alt="No" class="img-fluid">
-                    <h3 class="card-title">No</h3>
-                </div>
+        </div>
+
+        <!-- No Gesture -->
+        <div class="gesture-card">
+            <div class="gesture-image-container">
+                <img src="./no.png" alt="No" class="gesture-image">
             </div>
-            <div class="col text-center">
-                <div class="card">
-                    <img src="./help.png" alt="Help" class="img-fluid">
-                    <h3 class="card-title">Help</h3>
+            <div class="gesture-info">
+                <div class="gesture-title">No</div>
+                <div class="gesture-instructions">
+                    <h5>How to Sign:</h5>
+                    <ul class="gesture-steps">
+                        <li>Start with your fingers together</li>
+                        <li>Quickly snap them apart</li>
+                        <li>Like shaking your head</li>
+                        <li>Keep your palm facing forward</li>
+                    </ul>
                 </div>
+                <div class="usage-text">Usage: Denying something</div>
             </div>
-            <div class="col text-center">
-                <div class="card">
-                    <img src="./sorry.png" alt="Sorry" class="img-fluid">
-                    <h3 class="card-title">Sorry</h3>
-                </div>
+        </div>
+
+        <!-- I Love You Gesture -->
+        <div class="gesture-card">
+            <div class="gesture-image-container">
+                <img src="./love.png" alt="I Love You" class="gesture-image">
             </div>
-            <div class="col text-center">
-                <div class="card">
-                    <img src="./fear.png" alt="Thumbs Up" class="img-fluid">
-                    <h3 class="card-title">Fear</h3>
+            <div class="gesture-info">
+                <div class="gesture-title">I Love You</div>
+                <div class="gesture-instructions">
+                    <h5>How to Sign:</h5>
+                    <ul class="gesture-steps">
+                        <li>Raise your hand with palm facing outward</li>
+                        <li>Extend your thumb, index, and pinky fingers</li>
+                        <li>Keep your middle and ring fingers down</li>
+                        <li>Hold the position steady</li>
+                    </ul>
                 </div>
+                <div class="usage-text">Usage: Expressing love</div>
             </div>
-            <div class="col text-center">
-                <div class="card">
-                    <img src="./excuseme.png" alt="Excuse Me" class="img-fluid">
-                    <h3 class="card-title">Excuse Me</h3>
+        </div>
+
+        <!-- Help Gesture -->
+        <div class="gesture-card">
+            <div class="gesture-image-container">
+                <img src="./help.png" alt="Help" class="gesture-image">
+            </div>
+            <div class="gesture-info">
+                <div class="gesture-title">Help</div>
+                <div class="gesture-instructions">
+                    <h5>How to Sign:</h5>
+                    <ul class="gesture-steps">
+                        <li>Make a fist with one hand</li>
+                        <li>Place it on your open palm</li>
+                        <li>Move both hands upward together</li>
+                        <li>Keep your palms facing up</li>
+                    </ul>
                 </div>
+                <div class="usage-text">Usage: Requesting assistance</div>
+            </div>
+                </div>
+
+        <!-- Sorry Gesture -->
+        <div class="gesture-card">
+            <div class="gesture-image-container">
+                <img src="./sorry.png" alt="Sorry" class="gesture-image">
+            </div>
+            <div class="gesture-info">
+                <div class="gesture-title">Sorry</div>
+                <div class="gesture-instructions">
+                    <h5>How to Sign:</h5>
+                    <ul class="gesture-steps">
+                        <li>Make a fist with your right hand</li>
+                        <li>Place it on your chest</li>
+                        <li>Move it in a circular motion</li>
+                        <li>Keep your palm facing inward</li>
+                    </ul>
+                </div>
+                <div class="usage-text">Usage: Apologizing</div>
+            </div>
+                </div>
+
+        <!-- Fear Gesture -->
+        <div class="gesture-card">
+            <div class="gesture-image-container">
+                <img src="./fear.png" alt="Fear" class="gesture-image">
+            </div>
+            <div class="gesture-info">
+                <div class="gesture-title">Fear</div>
+                <div class="gesture-instructions">
+                    <h5>How to Sign:</h5>
+                    <ul class="gesture-steps">
+                        <li>Open both hands with fingers spread</li>
+                        <li>Place them near your chest</li>
+                        <li>Move them outward quickly</li>
+                        <li>Keep your palms facing inward</li>
+                    </ul>
+                </div>
+                <div class="usage-text">Usage: Expressing fear</div>
             </div>
         </div>
     </div>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <ul class="nav justify-content-center border-bottom pb-3 mb-3">
-                <li class="nav-item"><a href="./index.html" class="nav-link">Home</a></li>
-              
-                <li class="nav-item"><a href="./About.html" class="nav-link">About</a></li>
-            </ul>
-            <p class="text-center">© 2024 Bridging the Silence, Inc</p>
-        </div>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

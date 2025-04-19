@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Videos - AI Shravan</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <style>
+        body {
+            background: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .videos-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .video-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .video-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .video-thumbnail {
+            position: relative;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+            background: #000;
+        }
+
+        .video-thumbnail iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .video-info {
+            padding: 20px;
+        }
+
+        .video-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .video-meta {
+            display: flex;
+            justify-content: space-between;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .back-button:hover {
+            background: white;
+            transform: translateY(-2px);
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .upload-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #2196f3;
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .upload-button:hover {
+            background: #1976d2;
+            transform: translateY(-2px);
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #2196f3;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 50px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .no-videos {
+            text-align: center;
+            padding: 50px;
+            color: #6c757d;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <button class="back-button" onclick="window.history.back()">
+        <i class="fas fa-arrow-left"></i> Back
+    </button>
+
+    <button class="upload-button" onclick="window.location.href='video_upload.html'">
+        <i class="fas fa-plus"></i> Upload Video
+    </button>
+
+    <div class="videos-container">
+        <h1 class="page-title">Videos</h1>
+        <div id="videos-grid" class="row">
+            <div class="col-12 text-center">
+                <div class="loading-spinner"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAQ_y_einsNojJNTvSth1burw5Ud71hnwY",
+            authDomain: "ai-shravan.firebaseapp.com",
+            projectId: "ai-shravan",
+            storageBucket: "ai-shravan.appspot.com",
+            messagingSenderId: "947415877720",
+            appId: "1:947415877720:web:374a581af9d8e4ce26a22d",
+            measurementId: "G-V1KVN7MM5N"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Load videos from Firestore
+        function loadVideos() {
+            const videosGrid = document.getElementById('videos-grid');
+            
+            db.collection('videos')
+                .orderBy('uploadedAt', 'desc')
+                .get()
+                .then(snapshot => {
+                    videosGrid.innerHTML = '';
+                    
+                    if (snapshot.empty) {
+                        videosGrid.innerHTML = '<div class="col-12"><div class="no-videos">No videos available. Upload your first video!</div></div>';
+                        return;
+                    }
+
+                    snapshot.forEach(doc => {
+                        const video = doc.data();
+                        const videoCard = createVideoCard(video);
+                        videosGrid.appendChild(videoCard);
+                    });
+                })
+                .catch(error => {
+                    console.error("Error loading videos:", error);
+                    videosGrid.innerHTML = '<div class="col-12"><div class="text-danger text-center">Error loading videos. Please try again later.</div></div>';
+                });
+        }
+
+        function createVideoCard(video) {
+            const col = document.createElement('div');
+            col.className = 'col-md-6 col-lg-4 mb-4';
+            
+            const card = document.createElement('div');
+            card.className = 'video-card';
+            
+            const videoId = video.videoLink.split('id=')[1].split('&')[0];
+            const embedUrl = `https://drive.google.com/file/d/${videoId}/preview`;
+            
+            card.innerHTML = `
+                <div class="video-thumbnail">
+                    <iframe src="${embedUrl}" allowfullscreen></iframe>
+                </div>
+                <div class="video-info">
+                    <div class="video-title">${video.title}</div>
+                    <div class="video-meta">
+                        <span>${formatFileSize(video.size)}</span>
+                        <span>${formatDate(video.uploadedAt)}</span>
+                    </div>
+                </div>
+            `;
+            
+            col.appendChild(card);
+            return col;
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function formatDate(timestamp) {
+            if (!timestamp) return 'Unknown date';
+            const date = timestamp.toDate();
+            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+        }
+
+        // Load videos when page loads
+        document.addEventListener('DOMContentLoaded', loadVideos);
+    </script>
+</body>
+</html> 
