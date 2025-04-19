@@ -646,7 +646,7 @@
 <div class="container py-5">
   <div class="card shadow-sm mb-4">
     <div class="card-header bg-white">
-      <h5 class="card-title mb-0">Your Submitted Information</h5>
+      <h5 class="card-title mb-0">Last Recent User Form Submission</h5>
     </div>
     <div class="card-body p-0">
       <ul class="list-group list-group-flush" id="userInfoList">
@@ -747,23 +747,28 @@
         // Get user's display name or email
         const displayName = user.displayName || user.email;
         userName.textContent = displayName;
-        
-        // Generate initials
+
+        // Set user initials
         let initials = '';
         if (user.displayName) {
-          initials = user.displayName
-            .split(' ')
-            .map(word => word[0])
-            .join('')
-            .toUpperCase()
-            .substring(0, 2);
+          // If user has a display name, use first letters of first and last name
+          const nameParts = user.displayName.split(' ');
+          initials = nameParts.map(part => part[0]).join('').toUpperCase();
         } else if (user.email) {
-          initials = user.email.substring(0, 2).toUpperCase();
+          // If no display name, use first letter of email
+          initials = user.email[0].toUpperCase();
         }
+        
+        // Ensure we have at least one initial
+        if (!initials) {
+          initials = 'U'; // Default to 'U' for User if no name or email
+        }
+        
+        // Update the avatar with initials
         userInitials.textContent = initials;
       }
     }
-    });
+  });
 </script>
 
 </body>
