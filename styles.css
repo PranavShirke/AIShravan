@@ -1,6 +1,6 @@
 :root {
     /* Color system */
-    --primary-color: #4361ee;
+    --primary-color: #3a6186;
     --primary-color-dark: #3f37c9;
     --primary-color-light: #4cc9f0;
     --gray-100: #f8f9fa;
@@ -8,6 +8,10 @@
     --gray-300: #ced4da;
     --gray-600: #6c757d;
     --gray-900: #212529;
+    --secondary-color: #89253e;
+    --text-color: #333;
+    --light-bg: #f8f9fa;
+    --border-radius: 8px;
     
     /* Spacing */
     --section-spacing: 6rem 0;
@@ -26,9 +30,9 @@
   /* Base styles */
   body {
     font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    color: var(--gray-900);
+    color: var(--text-color);
     line-height: 1.7;
-    background-color: #fff;
+    background-color: #ffffff;
   }
   
   /* Button styles */
@@ -264,5 +268,245 @@
     * {
       transition: none !important;
       animation: none !important;
+    }
+  }
+
+  /* Responsive styles */
+  @media (max-width: 768px) {
+    /* General mobile adjustments */
+    .container {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    /* Header adjustments */
+    .site-header {
+        padding: 10px 0;
+    }
+
+    .navbar-brand {
+        font-size: 1.2rem;
+    }
+
+    .navbar-toggler {
+        padding: 0.25rem 0.5rem;
+    }
+
+    /* Hero section adjustments */
+    .hero-section {
+        padding: 2rem 0;
+    }
+
+    .hero-section h1 {
+        font-size: 2rem;
+    }
+
+    .hero-section .lead {
+        font-size: 1rem;
+    }
+
+    .hero-image {
+        max-width: 100%;
+        height: auto;
+    }
+
+    /* Feature cards adjustments */
+    .feature-card {
+        margin-bottom: 1rem;
+    }
+
+    .icon-square {
+        width: 40px;
+        height: 40px;
+    }
+
+    .feature-card h3 {
+        font-size: 1.25rem;
+    }
+
+    /* Dashboard adjustments */
+    .sidebar {
+        position: fixed;
+        width: 100%;
+        height: 100vh;
+        margin-left: -100%;
+        transition: margin-left 0.3s ease;
+    }
+
+    .sidebar.show {
+        margin-left: 0;
+    }
+
+    .main-content {
+        margin-left: 0 !important;
+        width: 100%;
+    }
+
+    /* Chart adjustments */
+    .chart-container {
+        height: 250px;
+    }
+
+    /* Form adjustments */
+    .form-control {
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+
+    /* Button adjustments */
+    .btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    /* User profile adjustments */
+    .user-profile {
+        padding: 0.5rem 1rem;
+    }
+
+    .user-initials {
+        width: 28px;
+        height: 28px;
+        font-size: 12px;
+    }
+
+    /* Feature sections */
+    .feature-section {
+        padding: 1rem 0;
+    }
+
+    .feature-placeholder {
+        padding: 1rem;
+    }
+
+    /* Video container */
+    .video-container {
+        position: relative;
+        padding-bottom: 56.25%; /* 16:9 aspect ratio */
+        height: 0;
+        overflow: hidden;
+    }
+
+    .video-container iframe,
+    .video-container video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    /* Gesture recognition adjustments */
+    #gestureOutput {
+        font-size: 1rem;
+        padding: 0.5rem;
+    }
+
+    /* Text-to-speech adjustments */
+    .voice-select {
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+
+    /* Speech-to-text adjustments */
+    .transcript-container {
+        height: 200px;
+    }
+
+    /* Community page adjustments */
+    .discussion-card,
+    .topic-card,
+    .event-card {
+        margin-bottom: 1rem;
+    }
+
+    /* Footer adjustments */
+    .site-footer {
+        padding: 1rem 0;
+    }
+
+    .social-links {
+        justify-content: center;
+        margin-top: 1rem;
+    }
+  }
+
+  /* Tablet adjustments */
+  @media (min-width: 769px) and (max-width: 1024px) {
+    .container {
+        max-width: 95%;
+    }
+
+    .feature-card {
+        margin-bottom: 1.5rem;
+    }
+
+    .chart-container {
+        height: 300px;
+    }
+  }
+
+  /* Small mobile devices */
+  @media (max-width: 480px) {
+    .hero-section h1 {
+        font-size: 1.75rem;
+    }
+
+    .feature-card h3 {
+        font-size: 1.1rem;
+    }
+
+    .btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
+    }
+
+    .chart-container {
+        height: 200px;
+    }
+  }
+
+  /* Landscape mode adjustments */
+  @media (max-height: 500px) and (orientation: landscape) {
+    .hero-section {
+        padding: 1rem 0;
+    }
+
+    .feature-card {
+        margin-bottom: 0.5rem;
+    }
+
+    .chart-container {
+        height: 200px;
+    }
+  }
+
+  /* High DPI screens */
+  @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .icon-square i {
+        font-size: 1.2em;
+    }
+  }
+
+  /* Dark mode support - Only apply if user explicitly prefers dark mode */
+  @media (prefers-color-scheme: dark) {
+    /* Override dark mode for the main content */
+    body {
+        background-color: #ffffff !important;
+        color: var(--text-color) !important;
+    }
+
+    .card {
+        background-color: #ffffff !important;
+        border-color: #dee2e6 !important;
+    }
+
+    .text-muted {
+        color: #6c757d !important;
+    }
+
+    /* Only apply dark mode to specific elements that need it */
+    .dark-mode-only {
+        background-color: #121212;
+        color: #f8f9fa;
     }
   }

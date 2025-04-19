@@ -46,10 +46,89 @@
             padding: 15px;
             border-bottom: 1px solid #eee;
             transition: all 0.3s ease;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
 
         .chat-history-item:hover {
             background: #f8f9fa;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .chat-message {
+            font-size: 0.95rem;
+            margin-bottom: 5px;
+            word-wrap: break-word;
+        }
+
+        .chat-timestamp {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+
+        .chat-sender {
+            font-weight: 600;
+            margin-right: 5px;
+        }
+
+        .chat-sender.user {
+            color: #007bff;
+        }
+
+        .chat-sender.bot {
+            color: #28a745;
+        }
+
+        .date-separator {
+            text-align: center;
+            margin: 20px 0;
+            color: #6c757d;
+            font-size: 0.9rem;
+            position: relative;
+        }
+
+        .date-separator::before,
+        .date-separator::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 30%;
+            height: 1px;
+            background: #dee2e6;
+        }
+
+        .date-separator::before {
+            left: 0;
+        }
+
+        .date-separator::after {
+            right: 0;
+        }
+
+        .chat-history-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .btn-export {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-clear {
+            background: #dc3545;
+            color: white;
+        }
+
+        .no-history {
+            text-align: center;
+            padding: 30px;
+            color: #6c757d;
+            font-style: italic;
         }
 
         .account-info {
@@ -196,6 +275,27 @@
             background: #d32f2f;
             transform: translateY(-2px);
         }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #007bff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            text-align: center;
+            color: #6c757d;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -266,26 +366,6 @@
                 </button>
             </div>
         </div>
-
-        <!-- Chat History -->
-        <div class="settings-card">
-            <div class="settings-header">
-                <h2 class="section-title">Chat History</h2>
-            </div>
-            <div class="settings-body">
-                <div class="mb-3">
-                    <button class="btn btn-outline-danger me-2" onclick="clearChatHistory()">
-                        <i class="fas fa-trash me-2"></i>Clear All History
-                    </button>
-                    <button class="btn btn-outline-primary" onclick="exportChatHistory()">
-                        <i class="fas fa-download me-2"></i>Export History
-                    </button>
-                </div>
-                <div id="chatHistory">
-                    <!-- Chat history items will be dynamically added here -->
-                </div>
-            </div>
-        </div>
     </div>
 
     <script>
@@ -310,7 +390,6 @@
                 return;
             }
             loadUserInfo(user);
-            loadChatHistory(user.uid);
         });
 
         // Account management functionality
@@ -373,104 +452,6 @@
                 console.error('Error saving changes:', error);
                 alert('Error saving changes: ' + error.message);
             });
-        }
-
-        // Chat history functionality
-        function loadChatHistory(userId) {
-            const chatHistoryContainer = document.getElementById('chatHistory');
-            
-            // Fetch chat history from Firestore
-            db.collection('chatHistory')
-                .where('userId', '==', userId)
-                .orderBy('timestamp', 'desc')
-                .limit(50)
-                .get()
-                .then(snapshot => {
-                    chatHistoryContainer.innerHTML = '';
-                    if (snapshot.empty) {
-                        chatHistoryContainer.innerHTML = '<p class="text-muted">No chat history available.</p>';
-                        return;
-                    }
-
-                    snapshot.forEach(doc => {
-                        const chat = doc.data();
-                        const chatItem = document.createElement('div');
-                        chatItem.className = 'chat-history-item';
-                        chatItem.innerHTML = `
-                            <div class="d-flex justify-content-between">
-                                <span>${chat.message}</span>
-                                <small class="text-muted">${new Date(chat.timestamp).toLocaleString()}</small>
-                            </div>
-                        `;
-                        chatHistoryContainer.appendChild(chatItem);
-                    });
-                })
-                .catch(error => {
-                    console.error('Error loading chat history:', error);
-                    chatHistoryContainer.innerHTML = '<p class="text-danger">Error loading chat history.</p>';
-                });
-        }
-
-        function clearChatHistory() {
-            if (confirm('Are you sure you want to clear all chat history? This action cannot be undone.')) {
-                const user = auth.currentUser;
-                if (!user) return;
-
-                db.collection('chatHistory')
-                    .where('userId', '==', user.uid)
-                    .get()
-                    .then(snapshot => {
-                        const batch = db.batch();
-                        snapshot.forEach(doc => {
-                            batch.delete(doc.ref);
-                        });
-                        return batch.commit();
-                    })
-                    .then(() => {
-                        document.getElementById('chatHistory').innerHTML = '<p class="text-muted">Chat history cleared.</p>';
-                    })
-                    .catch(error => {
-                        console.error('Error clearing chat history:', error);
-                        alert('Error clearing chat history: ' + error.message);
-                    });
-            }
-        }
-
-        function exportChatHistory() {
-            const user = auth.currentUser;
-            if (!user) return;
-
-            db.collection('chatHistory')
-                .where('userId', '==', user.uid)
-                .orderBy('timestamp', 'desc')
-                .get()
-                .then(snapshot => {
-                    const chatHistory = [];
-                    snapshot.forEach(doc => {
-                        const chat = doc.data();
-                        chatHistory.push({
-                            message: chat.message,
-                            timestamp: new Date(chat.timestamp).toLocaleString()
-                        });
-                    });
-
-                    // Create and download CSV file
-                    const csvContent = "data:text/csv;charset=utf-8," 
-                        + "Message,Timestamp\n"
-                        + chatHistory.map(chat => `"${chat.message}","${chat.timestamp}"`).join("\n");
-                    
-                    const encodedUri = encodeURI(csvContent);
-                    const link = document.createElement("a");
-                    link.setAttribute("href", encodedUri);
-                    link.setAttribute("download", "chat_history.csv");
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                })
-                .catch(error => {
-                    console.error('Error exporting chat history:', error);
-                    alert('Error exporting chat history: ' + error.message);
-                });
         }
 
         // Font Settings

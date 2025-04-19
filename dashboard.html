@@ -18,18 +18,26 @@
     .sidebar {
       width: 250px;
       transition: all 0.3s ease;
+      position: fixed;
+      height: 100vh;
+      overflow-y: auto;
+      z-index: 1000;
     }
     
     .sidebar.collapsed {
       margin-left: -250px;
     }
     
+    .main-content {
+      margin-left: 250px;
+      transition: all 0.3s ease;
+      width: calc(100% - 250px);
+    }
+    
     @media (max-width: 768px) {
       .sidebar {
-        position: fixed;
-        z-index: 1000;
-        height: 100vh;
-        margin-left: -250px;
+        width: 100%;
+        margin-left: -100%;
       }
       
       .sidebar.show {
@@ -37,7 +45,62 @@
       }
       
       .main-content {
-        margin-left: 0 !important;
+        margin-left: 0;
+        width: 100%;
+      }
+      
+      .chart-container {
+        height: 250px;
+      }
+      
+      .card {
+        margin-bottom: 1rem;
+      }
+      
+      .feature-card {
+        margin-bottom: 1rem;
+      }
+      
+      .avatar {
+        width: 32px;
+        height: 32px;
+        font-size: 14px;
+      }
+      
+      .user-name {
+        font-size: 0.9rem;
+      }
+    }
+    
+    @media (min-width: 769px) and (max-width: 1024px) {
+      .sidebar {
+        width: 200px;
+      }
+      
+      .main-content {
+        margin-left: 200px;
+        width: calc(100% - 200px);
+      }
+      
+      .chart-container {
+        height: 300px;
+      }
+    }
+    
+    /* Dark mode support */
+    @media (prefers-color-scheme: dark) {
+      body {
+        background-color: #121212;
+        color: #f8f9fa;
+      }
+      
+      .card {
+        background-color: #1e1e1e;
+        border-color: #333;
+      }
+      
+      .text-muted {
+        color: #adb5bd !important;
       }
     }
     
@@ -597,12 +660,12 @@
   // Initialize Firebase
   const firebaseConfig = {
     apiKey: "AIzaSyAQ_y_einsNojJNTvSth1burw5Ud71hnwY",
-    authDomain: "ai-shravan.firebaseapp.com",
-    projectId: "ai-shravan",
-    storageBucket: "ai-shravan.firebasestorage.app",
-    messagingSenderId: "947415877720",
-    appId: "1:947415877720:web:374a581af9d8e4ce26a22d",
-    measurementId: "G-V1KVN7MM5N"
+  authDomain: "ai-shravan.firebaseapp.com",
+  projectId: "ai-shravan",
+  storageBucket: "ai-shravan.firebasestorage.app",
+  messagingSenderId: "947415877720",
+  appId: "1:947415877720:web:374a581af9d8e4ce26a22d",
+  measurementId: "G-V1KVN7MM5N"
   };
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
@@ -628,36 +691,6 @@
       });
   }
 
-  // Check authentication state
-  firebase.auth().onAuthStateChanged((user) => {
-    if (!user) {
-      // If user is not logged in, redirect to index.html
-      window.location.href = 'index.html';
-    } else {
-      // Update user info in the dashboard
-      const userInitials = document.getElementById('userInitials');
-      const userName = document.getElementById('userName');
-      
-      // Get user's display name or email
-      const displayName = user.displayName || user.email;
-      userName.textContent = displayName;
-      
-      // Generate initials
-      let initials = '';
-      if (user.displayName) {
-        initials = user.displayName
-          .split(' ')
-          .map(word => word[0])
-          .join('')
-          .toUpperCase()
-          .substring(0, 2);
-      } else if (user.email) {
-        initials = user.email.substring(0, 2).toUpperCase();
-      }
-      userInitials.textContent = initials;
-    }
-  });
-
   // Fetch the latest user data from Firestore
   db.collection("dhhSurveyResponses")
     .orderBy("timestamp", "desc")
@@ -665,26 +698,71 @@
     .get()
     .then(snapshot => {
       const list = document.getElementById("userInfoList");
+      if (!list) {
+        console.error("User info list element not found");
+        return;
+      }
+
       if (snapshot.empty) {
         list.innerHTML = `<li class="list-group-item p-3 text-muted">No submission found.</li>`;
         return;
       }
 
+      try {
       const data = snapshot.docs[0].data();
       const items = [
-        `<li class="list-group-item p-3"><i class="fas fa-user me-2"></i><strong>Name:</strong> ${data.name}</li>`,
-        `<li class="list-group-item p-3"><i class="fas fa-envelope me-2"></i><strong>Email:</strong> ${data.email}</li>`,
-        `<li class="list-group-item p-3"><i class="fas fa-briefcase me-2"></i><strong>Occupation:</strong> ${data.occupation}</li>`,
-        `<li class="list-group-item p-3"><i class="fas fa-eye me-2"></i><strong>Interaction with DHH:</strong> ${data.interactionFrequency}</li>`,
-        `<li class="list-group-item p-3"><i class="fas fa-building me-2"></i><strong>Known Organizations:</strong> ${data.knownOrganizations}</li>`,
-        `<li class="list-group-item p-3"><i class="fas fa-hands me-2"></i><strong>Sign Language Knowledge:</strong> ${data.signLanguageKnowledge}</li>`,
-        `<li class="list-group-item p-3"><i class="fas fa-heart me-2"></i><strong>Willing to Volunteer:</strong> ${data.volunteerSupport}</li>`,
-        `<li class="list-group-item p-3"><i class="fas fa-comment-dots me-2"></i><strong>Suggestions:</strong> ${data.suggestions}</li>`
+          `<li class="list-group-item p-3"><i class="fas fa-user me-2"></i><strong>Name:</strong> ${data.name || 'Not provided'}</li>`,
+          `<li class="list-group-item p-3"><i class="fas fa-envelope me-2"></i><strong>Email:</strong> ${data.email || 'Not provided'}</li>`,
+          `<li class="list-group-item p-3"><i class="fas fa-briefcase me-2"></i><strong>Occupation:</strong> ${data.occupation || 'Not provided'}</li>`,
+          `<li class="list-group-item p-3"><i class="fas fa-eye me-2"></i><strong>Interaction with DHH:</strong> ${data.interactionFrequency || 'Not provided'}</li>`,
+          `<li class="list-group-item p-3"><i class="fas fa-building me-2"></i><strong>Known Organizations:</strong> ${data.knownOrganizations || 'Not provided'}</li>`,
+          `<li class="list-group-item p-3"><i class="fas fa-hands me-2"></i><strong>Sign Language Knowledge:</strong> ${data.signLanguageKnowledge || 'Not provided'}</li>`,
+          `<li class="list-group-item p-3"><i class="fas fa-heart me-2"></i><strong>Willing to Volunteer:</strong> ${data.volunteerSupport || 'Not provided'}</li>`,
+          `<li class="list-group-item p-3"><i class="fas fa-comment-dots me-2"></i><strong>Suggestions:</strong> ${data.suggestions || 'Not provided'}</li>`
       ];
       list.innerHTML = items.join('');
+      } catch (error) {
+        console.error("Error processing data:", error);
+        list.innerHTML = `<li class="list-group-item p-3 text-danger">Error processing data. Please try again later.</li>`;
+      }
     })
     .catch(err => {
-      document.getElementById("userInfoList").innerHTML = `<li class="list-group-item p-3 text-danger">Error loading data: ${err.message}</li>`;
+      console.error("Firestore error:", err);
+      const list = document.getElementById("userInfoList");
+      if (list) {
+        list.innerHTML = `<li class="list-group-item p-3 text-danger">Error loading data. Please check your internet connection and try again.</li>`;
+      }
+    });
+
+  // Initialize Firebase Auth
+  firebase.auth().onAuthStateChanged((user) => {
+    if (!user) {
+      window.location.href = 'index.html';
+    } else {
+      // Update user info in the dashboard
+      const userInitials = document.getElementById('userInitials');
+      const userName = document.getElementById('userName');
+      
+      if (userInitials && userName) {
+        // Get user's display name or email
+        const displayName = user.displayName || user.email;
+        userName.textContent = displayName;
+        
+        // Generate initials
+        let initials = '';
+        if (user.displayName) {
+          initials = user.displayName
+            .split(' ')
+            .map(word => word[0])
+            .join('')
+            .toUpperCase()
+            .substring(0, 2);
+        } else if (user.email) {
+          initials = user.email.substring(0, 2).toUpperCase();
+        }
+        userInitials.textContent = initials;
+      }
+    }
     });
 </script>
 

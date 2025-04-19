@@ -368,29 +368,8 @@
         };
         firebase.initializeApp(firebaseConfig);
 
-        // Handle logout
-        function handleLogout() {
-            firebase.auth().signOut()
-                .then(() => {
-                    // Clear all storage
-                    localStorage.clear();
-                    sessionStorage.clear();
-                    // Update UI immediately
-                    updateAuthUI(null);
-                    // Force a complete sign out
-                    firebase.auth().signOut().then(() => {
-                        // Redirect to same page with timestamp to prevent caching
-                        window.location.href = 'index.html?logout=true&t=' + new Date().getTime();
-                    });
-                })
-                .catch((error) => {
-                    console.error('Error signing out:', error);
-                    alert('Error signing out. Please try again.');
-                });
-        }
-
-        // Function to update UI based on auth state
-        function updateAuthUI(user) {
+        // Check authentication state
+        firebase.auth().onAuthStateChanged((user) => {
             const loginButtonContainer = document.getElementById('loginButtonContainer');
             const logoutButtonContainer = document.getElementById('logoutButtonContainer');
             const userProfileContainer = document.getElementById('userProfileContainer');
@@ -398,7 +377,7 @@
             const userName = document.getElementById('userName');
             const infoAlert = document.querySelector('.alert-info');
             const lockedFeatures = document.querySelectorAll('.locked-feature');
-            
+
             if (user) {
                 // User is signed in
                 loginButtonContainer.classList.add('d-none');
@@ -433,6 +412,7 @@
                     const button = feature.querySelector('button');
                     if (button) {
                         const link = document.createElement('a');
+                        // Set the correct href based on the feature
                         if (feature.querySelector('h3').textContent === 'Chatbot Support') {
                             link.href = './chatbot.html';
                         } else if (feature.querySelector('h3').textContent === 'Video Search') {
@@ -471,23 +451,16 @@
                     }
                 });
             }
-        }
-
-        // Check authentication state and URL parameters
-        firebase.auth().onAuthStateChanged((user) => {
-            // Check for logout parameter in URL
-            const urlParams = new URLSearchParams(window.location.search);
-            const isLogout = urlParams.get('logout');
-            
-            if (isLogout) {
-                // Clear any remaining auth state
-                firebase.auth().signOut();
-                // Remove the logout parameter from URL
-                window.history.replaceState({}, document.title, window.location.pathname);
-            }
-            
-            updateAuthUI(user);
         });
+
+        // Handle logout
+        function handleLogout() {
+            firebase.auth().signOut().then(() => {
+                window.location.href = 'index.html';
+            }).catch((error) => {
+                console.error('Error signing out:', error);
+            });
+        }
     </script>
     <script>
         // Service Worker Registration
@@ -500,7 +473,7 @@
                     .catch(err => {
                         console.log('ServiceWorker registration failed: ', err);
                     });
-                });
+            });
         }
     </script>
 </body>
