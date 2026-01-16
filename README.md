@@ -1,25 +1,49 @@
-AIShravan
-AIShravan is an accessibility-focused platform designed to help Deaf and Hard-of-Hearing individuals communicate seamlessly in everyday situations.
-It integrates speech, text, gesture recognition, and sign-language resources into one unified web application.
+AIShravan – Accessible Communication for the Deaf & Hard-of-Hearing
+
+AIShravan is an accessibility-driven communication platform designed to support Deaf and Hard-of-Hearing individuals in everyday interactions.
+It seamlessly integrates speech, text, gesture recognition, and sign-language learning resources into one unified web application.
+
+
+---
 
 🚀 Features
-🗣️ Speech-to-Text
-Converts spoken words into text in real-time to help users understand conversations.
-🔊 Text-to-Speech
-Reads out typed text aloud, enabling users to respond smoothly in verbal communication.
-✋ Hand Gesture Recognition
-Detects and interprets basic gestures through camera input (if supported by user’s system).
-🤟 Sign Language Charts
-Displays visual charts and references for learning / understanding sign language gestures.
-🤖 Chatbot Support
-AI-powered assistant integrated within the platform to answer questions and help navigate features.
 
-Tech Stack
-HTML
-CSS
-JavaScript
-External APIs for speech processing
-Python-based gesture libraries (if used in backend/processing)
+🗣️ Speech-to-Text
+
+Real-time conversion of spoken words into text, enabling users to clearly understand verbal conversations.
+
+🔊 Text-to-Speech
+
+Reads aloud user-typed text, helping deliver spoken responses in conversations where verbal communication is required.
+
+✋ Hand Gesture Recognition
+
+Uses camera input (if supported by the user’s device) to detect and interpret simple hand gestures.
+
+🤟 Sign Language Charts
+
+Offers visual charts for learning & referencing sign-language gestures, making the platform beginner-friendly.
+
+🤖 AI Chatbot Assistant
+
+An integrated AI helper that answers questions, assists with navigation, and explains platform features.
+
+
+---
+
+🛠️ Tech Stack
+
+Frontend: HTML, CSS, JavaScript
+
+APIs: External Speech-to-Text & Text-to-Speech APIs
+
+Gesture Processing: Python-based gesture recognition libraries (if used in backend)
+
+
+
+---
+
+📁 Project Structure
 
 AIShravan/
 │
@@ -29,8 +53,24 @@ AIShravan/
 ├── *.html                 # Individual UI pages
 └── script.js              # JavaScript logic
 
-Use the Github Pages link to view the implementation
 
-👤 Author
+---
+
+
+👥 Authors
+
 Pranav Shirke
+
 GitHub: https://github.com/PranavShirke
+
+Deep Das
+
+GitHub: https://github.com/deepdas2607
+
+---
+
+📄 License
+
+You may optionally add a license (MIT recommended for open-source projects).
+
+
